@@ -29,4 +29,45 @@ public class Histogramme
         
         return histo;
     }
+
+    public static int minimum(int[][] image)
+    {
+        int Min = image[0][0];
+
+        int hauteur = image.length; //Donne le nombre de lignes
+        int largeur = image[0].length; //Donne le nombre d'éléments de la ligne 0, donc la largeur
+
+        for(int x=0; x< largeur; x++)
+            for(int y=0; y< hauteur; y++)
+                if(image[x][y]<Min)
+                    Min = image[x][y];
+
+        return Min;
+    }
+
+
+    public static int maximum(int[][] image)
+    {
+        int Max = image[0][0];
+
+        int hauteur = image.length; //Donne le nombre de lignes
+        int largeur = image[0].length; //Donne le nombre d'éléments de la ligne 0, donc la largeur
+
+        for(int x=0; x< largeur; x++)
+            for(int y=0; y< hauteur; y++)
+                if(image[x][y]>Max)
+                    Max = image[x][y];
+
+        return Max;
+    }
+
+    public static int luminance(int[][] image)
+    {
+        return 0;
+    }
+
+    public static double contraste1(int[][] image)
+    {
+        return 0;
+    }
 }

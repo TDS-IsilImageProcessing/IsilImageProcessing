@@ -66,6 +66,27 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         couleurPinceauRGB = Color.BLACK;
         couleurPinceauNG = 0;
+
+        /***************************/
+        //Menu Histogramme
+        /***************************/
+        // Les bases sont déjà faites plus haut
+
+        jMenuHistogrammeAfficherParamImage.setText("Afficher les parametres de l image");
+        jMenuHistogrammeAfficherParamImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeAfficherParamImageActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogramme.add(jMenuHistogrammeAfficherParamImage);
+
+
+        /***************************/
+        /***************************/
+
+
+
     }
 
     /** This method is called from within the constructor to
@@ -105,6 +126,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuItemFourierAfficherPartieImaginaire = new javax.swing.JMenuItem();
         jMenuHistogramme = new javax.swing.JMenu();
         jMenuHistogrammeAfficher = new javax.swing.JMenuItem();
+        jMenuHistogrammeAfficherParamImage = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TestCImage3");
@@ -389,6 +411,22 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         frame.pack();
         frame.setVisible(true);
     }//GEN-LAST:event_jMenuHistogrammeAfficherActionPerformed
+
+    private void jMenuHistogrammeAfficherParamImageActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+        try {
+            int Min = Histogramme.minimum(imageNG.getMatrice());
+            int Max = Histogramme.maximum(imageNG.getMatrice());
+
+            //Afficher les résultas dans une fenêtre.
+            System.out.println("Min : " + Min);
+            System.out.println("Max : " + Max);
+
+        } catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void jMenuFiltrageGlobalBasIdealActionPerformed(java.awt.event.ActionEvent evt) {
         try
@@ -917,4 +955,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
 
 
+    //Histogramme
+    private javax.swing.JMenuItem jMenuHistogrammeAfficherParamImage;
 }
