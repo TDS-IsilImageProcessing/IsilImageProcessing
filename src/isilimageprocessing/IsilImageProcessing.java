@@ -13,6 +13,7 @@ import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
+import ImageProcessing.NonLineaire.MorphoElementaire;
 import isilimageprocessing.Dialogues.*;
 import java.awt.*;
 import java.io.*;
@@ -333,6 +334,39 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautIdeal);
 
 
+        /***************************/
+        //Traitements non linéaire
+        /***************************/
+        jMenuTraitementNonLineaire = new javax.swing.JMenu();
+        jMenuTraitementNonLineaire.setText("Traitement non lineaire");
+        jMenuBar1.add(jMenuTraitementNonLineaire);
+
+        jMenuTraitementElementaire = new javax.swing.JMenu();
+        jMenuTraitementElementaire.setText("Elementaire");
+        jMenuTraitementNonLineaire.add(jMenuTraitementElementaire);
+
+        jMenuTraitementElementaireErosion = new javax.swing.JMenuItem();
+        jMenuTraitementElementaireErosion.setText("Erosion");
+        jMenuTraitementElementaireErosion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuTraitementElementaireErosion(evt);
+            }
+        });
+
+        jMenuTraitementElementaireDilatation = new javax.swing.JMenuItem();
+        jMenuTraitementElementaireDilatation.setText("Dilatation");
+        jMenuTraitementElementaireDilatation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuTraitementElementaireDilatation(evt);
+            }
+        });
+
+        jMenuTraitementElementaire.add(jMenuTraitementElementaireErosion);
+        jMenuTraitementElementaire.add(jMenuTraitementElementaireDilatation);
+
+        /***************************/
+        /***************************/
+
         //
 
         setJMenuBar(jMenuBar1);
@@ -389,6 +423,72 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         frame.pack();
         frame.setVisible(true);
     }//GEN-LAST:event_jMenuHistogrammeAfficherActionPerformed
+
+    private void jMenuTraitementElementaireErosion(java.awt.event.ActionEvent evt) {
+
+        System.out.println("jMenuTraitementElementaireErosion");
+
+        try
+        {
+
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldFrequence = new JTextField();
+            panel.add(jTextFieldFrequence);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Taille du masque",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int TailleMasque = Integer.parseInt(jTextFieldFrequence.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Traitement non lineraire : Erosion");
+                int[][] d = MorphoElementaire.erosion(f_int, TailleMasque);
+                System.out.println("Fin Traitement non lineraire : Erosion");
+                imageNG.setMatrice(d);
+
+            } else {
+                System.out.println("Cancelled");
+            }
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
+
+    private void jMenuTraitementElementaireDilatation(java.awt.event.ActionEvent evt) {
+
+        System.out.println("jMenuTraitementElementaireDilatation");
+
+        try
+        {
+
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldFrequence = new JTextField();
+            panel.add(jTextFieldFrequence);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Taille du masque",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int TailleMasque = Integer.parseInt(jTextFieldFrequence.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Traitement non lineraire : Dilatation");
+                int[][] d = MorphoElementaire.dilatation(f_int, TailleMasque);
+                System.out.println("Fin Traitement non lineraire : Dilatation");
+                imageNG.setMatrice(d);
+
+            } else {
+                System.out.println("Cancelled");
+            }
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
 
     private void jMenuFiltrageGlobalBasIdealActionPerformed(java.awt.event.ActionEvent evt) {
         try
@@ -916,5 +1016,10 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
 
+    //Traitements non lineaire
+    private javax.swing.JMenu jMenuTraitementNonLineaire;
+    private javax.swing.JMenu jMenuTraitementElementaire;
+    private javax.swing.JMenuItem jMenuTraitementElementaireErosion;
+    private javax.swing.JMenuItem jMenuTraitementElementaireDilatation;
 
 }
