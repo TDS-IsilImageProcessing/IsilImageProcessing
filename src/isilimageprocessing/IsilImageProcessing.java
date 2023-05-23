@@ -13,10 +13,14 @@ import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
+import ImageProcessing.Lineaire.FiltrageLinaireGlobal;
+import ImageProcessing.Utils;
 import isilimageprocessing.Dialogues.*;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
+
+import isilimageprocessing.Dialogues.JDialogAfficheFiltre;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -402,12 +406,16 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                // TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                // TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-bas");
-                //dialog.setVisible(true);
+                System.out.println("Debut filtrage Bas Ideal");
+                int[][] filtrageBasIdeal = FiltrageLinaireGlobal.filtrePasseBasIdeal(f_int, freqence);
+                System.out.println("Fin du filtrage Bas Ideal");
+
+                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasIdeal), "filtrage passe-bas");
+                dialogAfficheFiltre.setVisible(true);
+
+
+             //   JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(filtrageBasIdeal),"Filtre global passe-bas");
+             //   dialog.setVisible(true);
 
 
             } else {
