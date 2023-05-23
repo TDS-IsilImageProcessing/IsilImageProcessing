@@ -340,10 +340,18 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 jMenuFiltrageGlobalBasButterworthActionPerformed(evt);
             }
         });
+        jMenuFiltrageGlobalHautButterworth = new javax.swing.JMenuItem();
+        jMenuFiltrageGlobalHautButterworth.setText("Passe-Haut Butterworth");
+        jMenuFiltrageGlobalHautButterworth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageGlobalHautButterworthActionPerformed(evt);
+            }
+        });
 
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasIdeal);
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautIdeal);
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasButterworth);
+        jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautButterworth);
 
 
         //
@@ -485,9 +493,43 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 int ordre = Integer.parseInt(jTextFieldOrdre.getText());
                 int f_int[][] = imageNG.getMatrice();
                 System.out.println("Debut Filtrage Bas butterworth");
-                int[][] filtrageHautButter = FiltrageLinaireGlobal.filtrePasseBasButterworth(f_int, freqence, ordre);
-                System.out.println("Fin Filtrage Haut Ideal");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe bas butterworth");
+                int[][] filtrageBasButter = FiltrageLinaireGlobal.filtrePasseBasButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasButter), "filtrage passe bas butterworth");
+                dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageGlobalHautButterworthActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Frequence: ");
+            JTextField jTextFieldFrequence = new JTextField();
+            JLabel ordreLabel = new JLabel("Ordre: ");
+            JTextField jTextFieldOrdre = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldFrequence);
+            panel.add(ordreLabel);
+            panel.add(jTextFieldOrdre);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
+                int ordre = Integer.parseInt(jTextFieldOrdre.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Haut butterworth");
+                int[][] filtrageHautButter = FiltrageLinaireGlobal.filtrePasseHautButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
                 dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
@@ -966,6 +1008,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasButterworth;
+    private javax.swing.JMenuItem jMenuFiltrageGlobalHautButterworth;
 
 
 }
