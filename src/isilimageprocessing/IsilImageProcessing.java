@@ -441,12 +441,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                //TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                //// TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-haut");
-                //dialog.setVisible(true);
+                System.out.println("Debut Filtrage Haut Ideal");
+                int[][] filtrageHautIdeal = FiltrageLinaireGlobal.filtrePasseHautIdeal(f_int, freqence);
+                System.out.println("Fin Filtrage Haut Ideal");
+                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautIdeal), "filtrage passe-haut");
+                dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
