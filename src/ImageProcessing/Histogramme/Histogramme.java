@@ -34,11 +34,11 @@ public class Histogramme
     {
         int Min = image[0][0];
 
-        int hauteur = image.length; //Donne le nombre de lignes
-        int largeur = image[0].length; //Donne le nombre d'éléments de la ligne 0, donc la largeur
+        int lignes = image.length; //lignes
+        int colonnes = image[0].length; //colonnes
 
-        for(int x=0; x< largeur; x++)
-            for(int y=0; y< hauteur; y++)
+        for(int x=0; x< lignes; x++)
+            for(int y=0; y< colonnes; y++)
                 if(image[x][y]<Min)
                     Min = image[x][y];
 
@@ -50,11 +50,11 @@ public class Histogramme
     {
         int Max = image[0][0];
 
-        int hauteur = image.length; //Donne le nombre de lignes
-        int largeur = image[0].length; //Donne le nombre d'éléments de la ligne 0, donc la largeur
+        int lignes = image.length; //lignes
+        int colonnes = image[0].length; //colonnes
 
-        for(int x=0; x< largeur; x++)
-            for(int y=0; y< hauteur; y++)
+        for(int x=0; x< lignes; x++)
+            for(int y=0; y< colonnes; y++)
                 if(image[x][y]>Max)
                     Max = image[x][y];
 
@@ -63,11 +63,38 @@ public class Histogramme
 
     public static int luminance(int[][] image)
     {
-        return 0;
+        int M = image.length;
+        int N = image[0].length;
+        int[] histo = Histogramme256(image);
+
+        double somme = 0;
+        for (int i = 0; i < 256; i++) {
+            somme += i * histo[i];
+        }
+
+        return (int) somme/(M * N) ;
     }
 
     public static double contraste1(int[][] image)
     {
-        return 0;
+        int M = image.length;
+        int N = image[0].length;
+        int luminance = luminance(image);
+
+        double sommeCarres = 0;
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                double dif = image[i][j] - luminance;
+                sommeCarres += Math.pow(dif, 2);
+            }
+        }
+
+        return Math.sqrt(sommeCarres / (M * N));
+    }
+    public static double contraste2(int[][] image)
+    {
+        int min = minimum(image);
+        int max = maximum(image);
+        return (double)(max - min) / (max + min);
     }
 }

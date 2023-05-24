@@ -72,7 +72,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         /***************************/
         // Les bases sont déjà faites plus haut
 
-        jMenuHistogrammeAfficherParamImage.setText("Afficher les parametres de l image");
+        jMenuHistogrammeAfficherParamImage.setText("Afficher les parametres image");
         jMenuHistogrammeAfficherParamImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuHistogrammeAfficherParamImageActionPerformed(evt);
@@ -414,14 +414,37 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
     private void jMenuHistogrammeAfficherParamImageActionPerformed(java.awt.event.ActionEvent evt)
     {
+        int Min = 0;
+        int Max = 255;
+        int Luminance = 0;
+        double contraste1 = 0.0;
+        double contraste2 = 0.0;
 
         try {
-            int Min = Histogramme.minimum(imageNG.getMatrice());
-            int Max = Histogramme.maximum(imageNG.getMatrice());
+            if (imageNG == null)
+            {
+                Min = Histogramme.minimum(imageRGB.getCImageNG().getMatrice());
+                Max = Histogramme.maximum(imageRGB.getCImageNG().getMatrice());
+                Luminance = Histogramme.luminance(imageRGB.getCImageNG().getMatrice());
+                contraste1 = Histogramme.contraste1(imageRGB.getCImageNG().getMatrice());
+                contraste2 = Histogramme.contraste2(imageRGB.getCImageNG().getMatrice());
+            }
+            else
+            {
+                Min = Histogramme.minimum(imageNG.getMatrice());
+                Max = Histogramme.maximum(imageNG.getMatrice());
+                Luminance = Histogramme.luminance(imageNG.getMatrice());
+                contraste1 = Histogramme.contraste1(imageNG.getMatrice());
+                contraste2 = Histogramme.contraste2(imageNG.getMatrice());
+
+            }
 
             //Afficher les résultas dans une fenêtre.
             System.out.println("Min : " + Min);
             System.out.println("Max : " + Max);
+            System.out.println("Luminance : " + Luminance);
+            System.out.println("contraste1 : " + contraste1);
+            System.out.println("contraste2 : " + contraste2);
 
         } catch (CImageNGException e) {
             throw new RuntimeException(e);
@@ -502,7 +525,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     {
         jMenuDessiner.setEnabled(true);
         jMenuFourier.setEnabled(false);
-        jMenuHistogramme.setEnabled(false);
+        jMenuHistogramme.setEnabled(true);
 
         //
         jMenuFiltrage.setEnabled(false);
