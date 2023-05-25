@@ -361,8 +361,26 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             }
         });
 
+        jMenuTraitementElementaireOuverture = new javax.swing.JMenuItem();
+        jMenuTraitementElementaireOuverture.setText("Ouverture");
+        jMenuTraitementElementaireOuverture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuTraitementElementaireOuverture(evt);
+            }
+        });
+
+        jMenuTraitementElementaireFermeture = new javax.swing.JMenuItem();
+        jMenuTraitementElementaireFermeture.setText("Fermeture");
+        jMenuTraitementElementaireFermeture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuTraitementElementaireFermeture(evt);
+            }
+        });
+
         jMenuTraitementElementaire.add(jMenuTraitementElementaireErosion);
         jMenuTraitementElementaire.add(jMenuTraitementElementaireDilatation);
+        jMenuTraitementElementaire.add(jMenuTraitementElementaireOuverture);
+        jMenuTraitementElementaire.add(jMenuTraitementElementaireFermeture);
 
         /***************************/
         /***************************/
@@ -489,6 +507,74 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         }
 
     }
+
+    private void jMenuTraitementElementaireOuverture(java.awt.event.ActionEvent evt) {
+
+        System.out.println("jMenuTraitementElementaireOuverture");
+
+        try
+        {
+
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldFrequence = new JTextField();
+            panel.add(jTextFieldFrequence);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Taille du masque",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int TailleMasque = Integer.parseInt(jTextFieldFrequence.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Traitement non lineraire : Ouverture");
+                int[][] d = MorphoElementaire.ouverture(f_int, TailleMasque);
+                System.out.println("Fin Traitement non lineraire : Ouverture");
+                imageNG.setMatrice(d);
+
+            } else {
+                System.out.println("Cancelled");
+            }
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
+
+    private void jMenuTraitementElementaireFermeture(java.awt.event.ActionEvent evt) {
+
+        System.out.println("jMenuTraitementElementaireFermeture");
+
+        try
+        {
+
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldFrequence = new JTextField();
+            panel.add(jTextFieldFrequence);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Taille du masque",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int TailleMasque = Integer.parseInt(jTextFieldFrequence.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Traitement non lineraire : Fermeture");
+                int[][] d = MorphoElementaire.fermeture(f_int, TailleMasque);
+                System.out.println("Fin Traitement non lineraire : Fermeture");
+                imageNG.setMatrice(d);
+
+            } else {
+                System.out.println("Cancelled");
+            }
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
+
+
 
     private void jMenuFiltrageGlobalBasIdealActionPerformed(java.awt.event.ActionEvent evt) {
         try
@@ -1021,5 +1107,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuTraitementElementaire;
     private javax.swing.JMenuItem jMenuTraitementElementaireErosion;
     private javax.swing.JMenuItem jMenuTraitementElementaireDilatation;
+    private javax.swing.JMenuItem jMenuTraitementElementaireOuverture;
+    private javax.swing.JMenuItem jMenuTraitementElementaireFermeture;
 
 }

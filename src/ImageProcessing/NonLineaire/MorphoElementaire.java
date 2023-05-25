@@ -72,6 +72,20 @@ public class MorphoElementaire {
         return imageOut;
     }
 
+    public static int[][] ouverture(int [][] image,int tailleMasque)
+    {
+        int[][] imageErodee = erosion(image, tailleMasque); // Appel de la fonction d'erosion
+        int[][] imageOut = dilatation(imageErodee, tailleMasque); // Appel de la fonction de dilatation avec l'image erodee
 
+        return imageOut;
+    }
+
+    public static int[][] fermeture(int [][] image,int tailleMasque)
+    {
+        int[][] imageDilatee = dilatation(image, tailleMasque); // Appel de la fonction de dilatation
+        int[][] imageOut = erosion(imageDilatee, tailleMasque); // Appel de la fonction d erosion avec l'image dilatee
+
+        return imageOut;
+    }
 
 }
