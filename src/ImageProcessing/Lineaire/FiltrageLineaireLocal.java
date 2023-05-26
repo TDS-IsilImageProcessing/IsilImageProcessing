@@ -27,4 +27,16 @@ public class FiltrageLineaireLocal {
 
         return resultat;
     }
+
+    public static int[][] filtreMoyenneur(int[][] image, int tailleMasque) {
+        double[][] masque = new double[tailleMasque][tailleMasque];
+        double masqueCoeff = 1.0 / (tailleMasque * tailleMasque);
+        for (int i = 0; i < tailleMasque; i++) {
+            for (int j = 0; j < tailleMasque; j++) {
+                masque[i][j] = masqueCoeff;
+            }
+        }
+        int [][] resultat = filtreMasqueConvolution(image, masque);
+        return resultat;
+    }
 }

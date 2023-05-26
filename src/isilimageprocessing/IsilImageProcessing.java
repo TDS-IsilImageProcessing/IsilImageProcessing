@@ -366,8 +366,16 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 jMenuFiltrageLocalConvolutionActionPerformed(evt);
             }
         });
+        jMenuFiltrageMoyenneur = new javax.swing.JMenuItem();
+        jMenuFiltrageMoyenneur.setText("Moyenneur");
+        jMenuFiltrageMoyenneur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageLocalMoyenneurActionPerformed(evt);
+            }
+        });
 
         jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
+        jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
 
 
         //
@@ -590,6 +598,35 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMasqueConvolution(f_int, masque);
                 System.out.println("Fin Filtrage Masque Convolution");
                 JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Masque Convolution");
+                dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageLocalMoyenneurActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel maskLabel = new JLabel("Masque: ");
+            JTextField jTextFieldMasque = new JTextField();
+            panel.add(maskLabel);
+            panel.add(jTextFieldMasque);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int tailleMasque = Integer.valueOf(jTextFieldMasque.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Masque Convolution");
+                int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMoyenneur(f_int, tailleMasque);
+                System.out.println("Fin Filtrage Masque Convolution");
+                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Moyenneur");
                 dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
@@ -1071,6 +1108,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautButterworth;
     private javax.swing.JMenu jMenuFiltrageLocal;
     private javax.swing.JMenuItem jMenuFiltrageMasqueConvolution;
+    private javax.swing.JMenuItem jMenuFiltrageMoyenneur;
 
 
 
