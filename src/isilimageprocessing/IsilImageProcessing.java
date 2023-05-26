@@ -449,14 +449,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Debut filtrage Bas Ideal");
                 int[][] filtrageBasIdeal = FiltrageLinaireGlobal.filtrePasseBasIdeal(f_int, freqence);
                 System.out.println("Fin du filtrage Bas Ideal");
-
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasIdeal), "filtrage passe-bas");
-                dialogAfficheFiltre.setVisible(true);
-
-
-             //   JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(filtrageBasIdeal),"Filtre global passe-bas");
-             //   dialog.setVisible(true);
-
+                filtrageBasIdeal = Utils.MiseAJourCImage(filtrageBasIdeal);
+                imageNG.setMatrice(filtrageBasIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasIdeal), "filtrage passe-bas");
+                //dialogAfficheFiltre.setVisible(true);
 
             } else {
                 System.out.println("Cancelled");
@@ -484,8 +481,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Debut Filtrage Haut Ideal");
                 int[][] filtrageHautIdeal = FiltrageLinaireGlobal.filtrePasseHautIdeal(f_int, freqence);
                 System.out.println("Fin Filtrage Haut Ideal");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautIdeal), "filtrage passe-haut");
-                dialogAfficheFiltre.setVisible(true);
+                filtrageHautIdeal = Utils.MiseAJourCImage(filtrageHautIdeal);
+                imageNG.setMatrice(filtrageHautIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautIdeal), "filtrage passe-haut");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -518,8 +518,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Debut Filtrage Bas butterworth");
                 int[][] filtrageBasButter = FiltrageLinaireGlobal.filtrePasseBasButterworth(f_int, freqence, ordre);
                 System.out.println("Fin Filtrage Haut butterworth");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasButter), "filtrage passe bas butterworth");
-                dialogAfficheFiltre.setVisible(true);
+                filtrageBasButter = Utils.MiseAJourCImage(filtrageBasButter);
+                imageNG.setMatrice(filtrageBasButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasButter), "filtrage passe bas butterworth");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -552,8 +555,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Debut Filtrage Haut butterworth");
                 int[][] filtrageHautButter = FiltrageLinaireGlobal.filtrePasseHautButterworth(f_int, freqence, ordre);
                 System.out.println("Fin Filtrage Haut butterworth");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
-                dialogAfficheFiltre.setVisible(true);
+                filtrageHautButter = Utils.MiseAJourCImage(filtrageHautButter);
+                imageNG.setMatrice(filtrageHautButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -580,7 +586,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 String v = jTextFieldMasque.getText();
                 String[] arr = v.split(",");
                 int length = (int) Math.sqrt(arr.length);
-                // TODO: faire matrice carrée quelconque de dimension nxn, avec n impair. (enonce)
                 double[][] masque = new double[length][length];
 
                 int count = 0;
@@ -592,13 +597,15 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                     }
                 }
 
-
                 int f_int[][] = imageNG.getMatrice();
                 System.out.println("Debut Filtrage Masque Convolution");
                 int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMasqueConvolution(f_int, masque);
                 System.out.println("Fin Filtrage Masque Convolution");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Masque Convolution");
-                dialogAfficheFiltre.setVisible(true);
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Masque Convolution");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -626,8 +633,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Debut Filtrage Masque Convolution");
                 int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMoyenneur(f_int, tailleMasque);
                 System.out.println("Fin Filtrage Masque Convolution");
-                JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Moyenneur");
-                dialogAfficheFiltre.setVisible(true);
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Moyenneur");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
