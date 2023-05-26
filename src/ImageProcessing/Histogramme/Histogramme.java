@@ -97,4 +97,92 @@ public class Histogramme
         int max = maximum(image);
         return (double)(max - min) / (max + min);
     }
+
+    public static int[][] rehaussement(int[][] image, int[] courbeTonale)
+    {
+        int M = image.length;
+        int N = image[0].length;
+
+        int[][] imageRehaussee = new int[M][N];
+
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                int niveauGris = image[i][j];
+                imageRehaussee[i][j] = courbeTonale[niveauGris];
+            }
+        }
+        return imageRehaussee;
+    }
+
+    public static int[] creerCourbeTonaleLineaireSaturation(int smin, int smax) {
+
+        int[] courbeTonale = new int[256];
+        for (int i = 0; i < 256; i++) {
+            if (i <= smin) {
+                courbeTonale[i] = 0;
+            } else if (i >= smax) {
+                courbeTonale[i] = 255;
+            } else {
+                courbeTonale[i] = 255 * (i - smin) / (smax - smin);
+            }
+        }
+
+        return courbeTonale;
+    }
+
+    public static int[] creerCourbeTonaleGamma(double gamma) {
+        int[] courbeTonale = new int[256];
+
+        for (int i = 0; i < 256; i++) {
+            int nouveauNiveauGris = (int) (255 * Math.pow(i / 255.0, 1.0 / gamma));
+            courbeTonale[i] = Math.min(Math.max(nouveauNiveauGris, 0), 255);
+        }
+
+        return courbeTonale;
+    }
+
+    public static int[] creeCourbeTonaleNegatif()
+    {
+        int[] courbeTonale = new int[256];
+
+        for (int i = 0; i < 256; i++) {
+            courbeTonale[i] = 255 - i;
+        }
+
+        return courbeTonale;
+    }
+
+    public static int[] creeCourbeTonaleEgalisation(int[][] image)
+    {
+        int M = image.length;
+        int N = image[0].length;
+
+        int[] courbeTonaleEgalisation = new int[256];
+        // Calcul de l'histogramme de l'image originale hist(k), k ? [0, 255]
+        int[] histogramme = Histogramme256(image);
+
+        double[] histogrammeNormalise = new double[256];
+        double[] histogrammeCumule = new double[256];
+
+        // Normalisation de l'histogramme
+        int totalPixels = M * N;
+        for (int i = 0; i < 256; i++) {
+            histogrammeNormalise[i] = (double) histogramme[i] / totalPixels;
+        }
+
+        // Calcul de l'histogramme des frequences cumulées
+        histogrammeCumule[0] = histogrammeNormalise[0];
+        for (int i = 1; i < 256; i++) {
+            histogrammeCumule[i] = histogrammeCumule[i - 1] + histogrammeNormalise[i];
+        }
+
+
+        // Transformation des niveaux de gris en utilisant la loi
+        for (int i = 0; i < 256; i++) {
+            courbeTonaleEgalisation[i] = (int) (255 * histogrammeCumule[i]);
+        }
+
+        return courbeTonaleEgalisation;
+    }
+
 }
