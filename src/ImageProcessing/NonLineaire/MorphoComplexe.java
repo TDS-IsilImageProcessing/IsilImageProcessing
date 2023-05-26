@@ -7,6 +7,14 @@ import java.util.List;
 public class MorphoComplexe {
 
 
+    /*
+    * Copie l'image de base dans une image de sortie
+    * Parcourt chaque pixel l'image de sortie
+    * Prend les coordonnées du pixel courant, si dans le masque le pixel à cet emplacement est blanc, le pixel doit etre traite
+    * Dilate le pixel sur base de ceux de l'image de départ (voisinage de 1 pixel, comme si on avait un masque de taille 1)
+    * Recommence autant de fois qu'on le veut via le paramètre "nbIter"
+    *
+    * */
     public static int[][] dilatationGeodesique(int[][] image,int[][] masqueGeodesique, int nbIter)
     {
         int hauteur = image.length;
@@ -56,6 +64,15 @@ public class MorphoComplexe {
         return imageDilatee;
     }
 
+
+    /*
+    * Comme Dilatation geodesique, mais sans le parametre nbIter
+    * Il recommencera autant de fois que nécessaire
+    * Chaque fois qu'un pixel est dilate, il met un booleen a 1
+    * Quand il n'y a plus rien à faire, le booleen reste à false et le traitement est fini
+    * (Peut aller jusqu'à 28 000 ittérations, il est motivé)
+    *
+    * */
     public static int[][] reconstructionGeodesique(int[][] image, int[][] masqueGeodesique) {
         int hauteur = image.length;
         int largeur = image[0].length;
@@ -111,6 +128,16 @@ public class MorphoComplexe {
         return imageReconstruite;
     }
 
+    /*
+    * UTILITE : Retirer le bruit d'une image
+    *
+    * COMMENT :
+    * Utilise un masque
+    * Parcourt tous les pixels de l'image et pour chacun le recouvre du masque (voisinage)
+    * Toutes les valeurs des pixels du voisinage sont mis dans une liste triee
+    * La valeur au centre de la liste (Médiane) remplace le pixel courant
+    *
+    * */
     public static int[][] filtreMedian(int[][] image, int tailleMasque) {
         int hauteur = image.length;
         int largeur = image[0].length;

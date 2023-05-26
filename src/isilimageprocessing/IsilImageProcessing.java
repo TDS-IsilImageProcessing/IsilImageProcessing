@@ -700,6 +700,12 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
     }
 
+
+    /*
+    * Cette fonction permet de générer sous forme de programmation une image NG
+    * Le but premier etait de creer une image binaire, moitié noir / moitié blanc pour l'utiliser comme masque geodesique
+    * Cette fonction est appellee par le "Menu de test"
+    * */
     private CImageNG MaFctOuvrirImageNG() {
 
         //Copie de celle du prof, mais retourne l'image plutot que de setter une variable globale avec l image

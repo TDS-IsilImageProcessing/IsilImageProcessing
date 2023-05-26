@@ -10,6 +10,14 @@ import java.util.List;
 public class MorphoElementaire {
 
 
+    /*
+    * Parcourt chaque pixel de l'image
+    * Entoure chaque pixel par le masque "tailleMasque" (on parle de "voisinage")
+    * Remplace la valeur du pixel courant par la plus PETITE valeur du voisinage
+    *
+    * UTILITE :
+    *   Permet de faire ressortir les contours d'une image
+    * */
     public static int[][] erosion(int [][] image,int tailleMasque)
     {
 
@@ -41,6 +49,14 @@ public class MorphoElementaire {
         return imageOut;
     }
 
+
+
+    /*
+     * Parcourt chaque pixel de l'image
+     * Entoure chaque pixel par le masque "tailleMasque" (on parle de "voisinage")
+     * Remplace la valeur du pixel courant par la plus GRANDE valeur du voisinage
+     *
+     * */
     public static int[][] dilatation(int [][] image,int tailleMasque)
     {
 
@@ -72,6 +88,15 @@ public class MorphoElementaire {
         return imageOut;
     }
 
+
+
+    /*
+    * UTILITE :
+    *   Image plus lisse, avec moins de détails
+    *
+    * COMMENT : Erosion, puis Dilatation
+    *
+    * */
     public static int[][] ouverture(int [][] image,int tailleMasque)
     {
         int[][] imageErodee = erosion(image, tailleMasque); // Appel de la fonction d'erosion
@@ -80,6 +105,14 @@ public class MorphoElementaire {
         return imageOut;
     }
 
+
+    /*
+    *
+    * UTILITE :
+    *   Eliminer des petits trous, des lacunes dans l'image
+    *
+    * COMMENT : Dilatation, puis Erosion
+    * */
     public static int[][] fermeture(int [][] image,int tailleMasque)
     {
         int[][] imageDilatee = dilatation(image, tailleMasque); // Appel de la fonction de dilatation
