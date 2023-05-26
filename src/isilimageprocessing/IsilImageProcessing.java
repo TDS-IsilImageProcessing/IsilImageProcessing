@@ -354,9 +354,18 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             }
         });
 
+        jMenuSeuillageSeuillageDouble = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageDouble.setText("Seuillage double");
+        jMenuSeuillageSeuillageDouble.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageDoubleActionPerformed(evt);
+            }
+        });
+
 
         //Ajouts des items au menu Seuillage
         jMenuSeuillage.add(jMenuSeuillageSeuillageSimple);
+        jMenuSeuillage.add(jMenuSeuillageSeuillageDouble);
 
         /******************/
         /******************/
@@ -501,6 +510,52 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 System.out.println("Cancelled");
             }
 
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void jMenuSeuillageSeuillageDoubleActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            JPanel panel1 = new JPanel(new GridLayout(0, 1));
+            JPanel panel2 = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldSeuil1 = new JTextField();
+            JTextField jTextFieldSeuil2 = new JTextField();
+            panel1.add(jTextFieldSeuil1);
+            panel2.add(jTextFieldSeuil2);
+
+            int result = JOptionPane.showConfirmDialog(null, panel1, "Valeur du seuil 1",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+
+                result = JOptionPane.showConfirmDialog(null, panel2, "Valeur du seuil 2",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+
+                    int seuil1 = Integer.parseInt(jTextFieldSeuil1.getText());
+                    int seuil2 = Integer.parseInt(jTextFieldSeuil2.getText());
+                    int MatriceImage[][] = imageNG.getMatrice();
+
+                    System.out.println("Debut Seuillage double");
+                    int [][] ResulatSeuillageDouble = Seuillage.seuillageDouble(MatriceImage, seuil1, seuil2);
+                    System.out.println("Fin Seuillage double");
+
+                    imageNG.setMatrice(ResulatSeuillageDouble);
+                }
+                else
+                {
+                    System.out.println("Cancelled");
+                }
+            }
+            else
+            {
+                System.out.println("Cancelled");
+            }
         }
         catch (CImageNGException ex)
         {
@@ -975,5 +1030,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
     private javax.swing.JMenu jMenuSeuillage;
     private javax.swing.JMenuItem jMenuSeuillageSeuillageSimple;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageDouble;
 
 }
