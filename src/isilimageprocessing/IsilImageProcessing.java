@@ -13,6 +13,7 @@ import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
+import ImageProcessing.Seuillage.Seuillage;
 import isilimageprocessing.Dialogues.*;
 import java.awt.*;
 import java.io.*;
@@ -333,6 +334,33 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautIdeal);
 
 
+
+        /******************
+            Menu Seuillage
+        *****************/
+
+
+        //Menu Seuillage
+        jMenuSeuillage = new javax.swing.JMenu();
+        jMenuSeuillage.setText("Seuillage");
+        jMenuBar1.add(jMenuSeuillage);
+
+        //Items du menu Seuillage
+        jMenuSeuillageSeuillageSimple = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageSimple.setText("Seuillage simple");
+        jMenuSeuillageSeuillageSimple.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageSimpleActionPerformed(evt);
+            }
+        });
+
+
+        //Ajouts des items au menu Seuillage
+        jMenuSeuillage.add(jMenuSeuillageSeuillageSimple);
+
+        /******************/
+        /******************/
+
         //
 
         setJMenuBar(jMenuBar1);
@@ -439,6 +467,36 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 //// TODO donner resultat du filtre (d)
                 //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-haut");
                 //dialog.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void jMenuSeuillageSeuillageSimpleActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldSeuil = new JTextField();
+            panel.add(jTextFieldSeuil);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Valeur du seuil",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int seuil = Integer.parseInt(jTextFieldSeuil.getText());
+                int MatriceImage[][] = imageNG.getMatrice();
+                System.out.println("Debut Seuillage simple");
+                int [][] ResulatSeuillageSimple = Seuillage.seuillageSimple(MatriceImage, seuil);
+                System.out.println("Fin Seuillage simple");
+
+                imageNG.setMatrice(ResulatSeuillageSimple);
+
             } else {
                 System.out.println("Cancelled");
             }
@@ -915,6 +973,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuFiltrageGlobal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
-
+    private javax.swing.JMenu jMenuSeuillage;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageSimple;
 
 }
