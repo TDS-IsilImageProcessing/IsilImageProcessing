@@ -13,10 +13,15 @@ import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
+import ImageProcessing.Lineaire.FiltrageLinaireGlobal;
+import ImageProcessing.Lineaire.FiltrageLineaireLocal;
+import ImageProcessing.Utils;
 import isilimageprocessing.Dialogues.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import javax.swing.*;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -328,13 +333,51 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 jMenuFiltrageGlobalHautIdealActionPerformed(evt);
             }
         });
+        jMenuFiltrageGlobalBasButterworth = new javax.swing.JMenuItem();
+        jMenuFiltrageGlobalBasButterworth.setText("Passe-Bas Butterworth");
+        jMenuFiltrageGlobalBasButterworth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageGlobalBasButterworthActionPerformed(evt);
+            }
+        });
+        jMenuFiltrageGlobalHautButterworth = new javax.swing.JMenuItem();
+        jMenuFiltrageGlobalHautButterworth.setText("Passe-Haut Butterworth");
+        jMenuFiltrageGlobalHautButterworth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageGlobalHautButterworthActionPerformed(evt);
+            }
+        });
 
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasIdeal);
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautIdeal);
+        jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasButterworth);
+        jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautButterworth);
 
 
         //
+        jMenuFiltrageLocal = new javax.swing.JMenu();
+        jMenuFiltrageLocal.setText("Local");
+        jMenuFiltrage.add(jMenuFiltrageLocal);
+        jMenuFiltrageMasqueConvolution = new javax.swing.JMenuItem();
+        jMenuFiltrageMasqueConvolution.setText("Masque Convolution");
+        jMenuFiltrageMasqueConvolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageLocalConvolutionActionPerformed(evt);
+            }
+        });
+        jMenuFiltrageMoyenneur = new javax.swing.JMenuItem();
+        jMenuFiltrageMoyenneur.setText("Moyenneur");
+        jMenuFiltrageMoyenneur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageLocalMoyenneurActionPerformed(evt);
+            }
+        });
 
+        jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
+        jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
+
+
+        //
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -402,13 +445,14 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                // TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                // TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-bas");
-                //dialog.setVisible(true);
-
+                System.out.println("Debut filtrage Bas Ideal");
+                int[][] filtrageBasIdeal = FiltrageLinaireGlobal.filtrePasseBasIdeal(f_int, freqence);
+                System.out.println("Fin du filtrage Bas Ideal");
+                filtrageBasIdeal = Utils.MiseAJourCImage(filtrageBasIdeal);
+                imageNG.setMatrice(filtrageBasIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasIdeal), "filtrage passe-bas");
+                //dialogAfficheFiltre.setVisible(true);
 
             } else {
                 System.out.println("Cancelled");
@@ -433,12 +477,166 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                //TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                //// TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-haut");
-                //dialog.setVisible(true);
+                System.out.println("Debut Filtrage Haut Ideal");
+                int[][] filtrageHautIdeal = FiltrageLinaireGlobal.filtrePasseHautIdeal(f_int, freqence);
+                System.out.println("Fin Filtrage Haut Ideal");
+                filtrageHautIdeal = Utils.MiseAJourCImage(filtrageHautIdeal);
+                imageNG.setMatrice(filtrageHautIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautIdeal), "filtrage passe-haut");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageGlobalBasButterworthActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Frequence: ");
+            JTextField jTextFieldFrequence = new JTextField();
+            JLabel ordreLabel = new JLabel("Ordre: ");
+            JTextField jTextFieldOrdre = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldFrequence);
+            panel.add(ordreLabel);
+            panel.add(jTextFieldOrdre);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
+                int ordre = Integer.parseInt(jTextFieldOrdre.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Bas butterworth");
+                int[][] filtrageBasButter = FiltrageLinaireGlobal.filtrePasseBasButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                filtrageBasButter = Utils.MiseAJourCImage(filtrageBasButter);
+                imageNG.setMatrice(filtrageBasButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasButter), "filtrage passe bas butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageGlobalHautButterworthActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Frequence: ");
+            JTextField jTextFieldFrequence = new JTextField();
+            JLabel ordreLabel = new JLabel("Ordre: ");
+            JTextField jTextFieldOrdre = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldFrequence);
+            panel.add(ordreLabel);
+            panel.add(jTextFieldOrdre);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
+                int ordre = Integer.parseInt(jTextFieldOrdre.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Haut butterworth");
+                int[][] filtrageHautButter = FiltrageLinaireGlobal.filtrePasseHautButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                filtrageHautButter = Utils.MiseAJourCImage(filtrageHautButter);
+                imageNG.setMatrice(filtrageHautButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void jMenuFiltrageLocalConvolutionActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel maskLabel = new JLabel("Masque: ");
+            JTextField jTextFieldMasque = new JTextField();
+            panel.add(maskLabel);
+            panel.add(jTextFieldMasque);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                String v = jTextFieldMasque.getText();
+                String[] arr = v.split(",");
+                int length = (int) Math.sqrt(arr.length);
+                double[][] masque = new double[length][length];
+
+                int count = 0;
+                for (int i = 0; i < masque.length; i++) {
+                    for (int j = 0; j < masque[0].length; j++) {
+                        double val = Double.parseDouble(arr[count]);
+                        masque[i][j] = val;
+                        count++;
+                    }
+                }
+
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Masque Convolution");
+                int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMasqueConvolution(f_int, masque);
+                System.out.println("Fin Filtrage Masque Convolution");
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Masque Convolution");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageLocalMoyenneurActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel maskLabel = new JLabel("Masque: ");
+            JTextField jTextFieldMasque = new JTextField();
+            panel.add(maskLabel);
+            panel.add(jTextFieldMasque);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int tailleMasque = Integer.valueOf(jTextFieldMasque.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Masque Convolution");
+                int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMoyenneur(f_int, tailleMasque);
+                System.out.println("Fin Filtrage Masque Convolution");
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Moyenneur");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -915,6 +1113,13 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuFiltrageGlobal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
+    private javax.swing.JMenuItem jMenuFiltrageGlobalBasButterworth;
+    private javax.swing.JMenuItem jMenuFiltrageGlobalHautButterworth;
+    private javax.swing.JMenu jMenuFiltrageLocal;
+    private javax.swing.JMenuItem jMenuFiltrageMasqueConvolution;
+    private javax.swing.JMenuItem jMenuFiltrageMoyenneur;
+
+
 
 
 }
