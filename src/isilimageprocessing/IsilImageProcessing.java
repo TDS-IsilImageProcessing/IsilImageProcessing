@@ -362,10 +362,18 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             }
         });
 
+        jMenuSeuillageSeuillageAutomatique = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageAutomatique.setText("Seuillage Automatique");
+        jMenuSeuillageSeuillageAutomatique.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageAutomatiqueActionPerformed(evt);
+            }
+        });
 
         //Ajouts des items au menu Seuillage
         jMenuSeuillage.add(jMenuSeuillageSeuillageSimple);
         jMenuSeuillage.add(jMenuSeuillageSeuillageDouble);
+        jMenuSeuillage.add(jMenuSeuillageSeuillageAutomatique);
 
         /******************/
         /******************/
@@ -562,6 +570,24 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             System.out.println("Erreur CImageNG : " + ex.getMessage());
         }
     }
+
+    private void jMenuSeuillageSeuillageAutomatiqueActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try{
+
+            System.out.println("Debut Seuillage automatique");
+            int [][] ResulatSeuillageAutomatique = Seuillage.seuillageAutomatique(imageNG.getMatrice());
+            System.out.println("Fin Seuillage automatique");
+
+            imageNG.setMatrice(ResulatSeuillageAutomatique);
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
+
 
     private void activeMenusNG()
     {
@@ -1031,5 +1057,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuSeuillage;
     private javax.swing.JMenuItem jMenuSeuillageSeuillageSimple;
     private javax.swing.JMenuItem jMenuSeuillageSeuillageDouble;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageAutomatique;
 
 }
