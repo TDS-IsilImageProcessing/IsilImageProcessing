@@ -11,6 +11,7 @@ import CImage.Exceptions.*;
 import CImage.Observers.*;
 import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
+import ImageProcessing.Contours.ContoursNonLineaire;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
 import ImageProcessing.NonLineaire.MorphoComplexe;
@@ -686,36 +687,38 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private void ContoursNonLineairegradientErosion(java.awt.event.ActionEvent evt) {
         try
         {
-            JPanel panel = new JPanel(new GridLayout(0, 1));
-            JTextField jTextFieldFrequence = new JTextField();
-            panel.add(jTextFieldFrequence);
-
-            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if (result == JOptionPane.OK_OPTION) {
-                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
-                int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                // TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                // TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-bas");
-                //dialog.setVisible(true);
-            }
+            imageNG.setMatrice(ContoursNonLineaire.gradientErosion(imageNG.getMatrice()));
         }
-        catch (CImageNGException ex)
-        {
-            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
         }
     }
     private void ContoursNonLineairegradientDilatation(java.awt.event.ActionEvent evt) {
-        ;
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.gradientDilatation(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
     }
     private void ContoursNonLineairegradientBeucher(java.awt.event.ActionEvent evt) {
-        ;
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.gradientBeucher(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
     }
     private void ContoursNonLineairelaplacienNonLineaire(java.awt.event.ActionEvent evt) {
-        ;
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.laplacienNonLineaire(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void jMenuTraitementComplexeDilatationGeodesique(java.awt.event.ActionEvent evt) {

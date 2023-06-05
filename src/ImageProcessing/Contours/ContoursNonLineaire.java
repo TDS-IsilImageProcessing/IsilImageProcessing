@@ -8,12 +8,12 @@ public class ContoursNonLineaire {
     public static int[][] gradientErosion(int[][] image)
     {
         int[][] erosionResult = MorphoElementaire.erosion(image, 3);
-        int rows = image.length;
-        int cols = image[0].length;
-        int[][] gradient = new int[rows][cols];
+        int lignes = image.length;
+        int colonnes = image[0].length;
+        int[][] gradient = new int[lignes][colonnes];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < lignes; i++) {
+            for (int j = 0; j < colonnes; j++) {
                 gradient[i][j] = image[i][j] - erosionResult[i][j];
             }
         }
@@ -24,12 +24,12 @@ public class ContoursNonLineaire {
     public static int[][] gradientDilatation(int[][] image)
     {
         int[][] dilatationResult = MorphoElementaire.dilatation(image, 3);
-        int rows = image.length;
-        int cols = image[0].length;
-        int[][] gradient = new int[rows][cols];
+        int lignes = image.length;
+        int colonnes = image[0].length;
+        int[][] gradient = new int[lignes][colonnes];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < lignes; i++) {
+            for (int j = 0; j < colonnes; j++) {
                 gradient[i][j] = dilatationResult[i][j] - image[i][j];
             }
         }
@@ -40,12 +40,12 @@ public class ContoursNonLineaire {
     {
         int[][] erosionResult = MorphoElementaire.erosion(image, 3);
         int[][] dilatationResult = MorphoElementaire.dilatation(image, 3);
-        int rows = image.length;
-        int cols = image[0].length;
-        int[][] gradient = new int[rows][cols];
+        int lignes = image.length;
+        int colonnes = image[0].length;
+        int[][] gradient = new int[lignes][colonnes];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < lignes; i++) {
+            for (int j = 0; j < colonnes; j++) {
                 gradient[i][j] = dilatationResult[i][j] - erosionResult[i][j];
             }
         }
@@ -57,12 +57,12 @@ public class ContoursNonLineaire {
     {
         int[][] gradientDilatationResult = gradientDilatation(image);
         int[][] gradientErosionResult = gradientErosion(image);
-        int rows = image.length;
-        int cols = image[0].length;
-        int[][] laplacien = new int[rows][cols];
+        int lignes = image.length;
+        int colonnes = image[0].length;
+        int[][] laplacien = new int[lignes][colonnes];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < lignes; i++) {
+            for (int j = 0; j < colonnes; j++) {
                 laplacien[i][j] = gradientDilatationResult[i][j] - gradientErosionResult[i][j];
             }
         }
