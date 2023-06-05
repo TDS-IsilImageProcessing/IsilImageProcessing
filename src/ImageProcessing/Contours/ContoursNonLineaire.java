@@ -17,7 +17,6 @@ public class ContoursNonLineaire {
                 gradient[i][j] = image[i][j] - erosionResult[i][j];
             }
         }
-
         return gradient;
     }
 
@@ -49,7 +48,6 @@ public class ContoursNonLineaire {
                 gradient[i][j] = dilatationResult[i][j] - erosionResult[i][j];
             }
         }
-
         return gradient;
     }
 
@@ -63,10 +61,9 @@ public class ContoursNonLineaire {
 
         for (int i = 0; i < lignes; i++) {
             for (int j = 0; j < colonnes; j++) {
-                laplacien[i][j] = gradientDilatationResult[i][j] - gradientErosionResult[i][j];
+                laplacien[i][j] = Math.abs(gradientDilatationResult[i][j] - gradientErosionResult[i][j]);
             }
         }
-
         return laplacien;
     }
 }
