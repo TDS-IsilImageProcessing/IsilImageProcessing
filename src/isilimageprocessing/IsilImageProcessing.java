@@ -11,6 +11,7 @@ import CImage.Exceptions.*;
 import CImage.Observers.*;
 import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
+import ImageProcessing.Contours.ContoursNonLineaire;
 import ImageProcessing.Contours.ContoursLineaire;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
@@ -421,7 +422,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
 
         /***************************/
-        //Traitements non linéaire
+        //Traitements non lin�aire
         /***************************/
         jMenuTraitementNonLineaire = new javax.swing.JMenu();
         jMenuTraitementNonLineaire.setText("Traitement non lineaire");
@@ -505,6 +506,93 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuTraitementComplexe.add(jMenuTraitementComplexeDilatationGeodesique);
         jMenuTraitementComplexe.add(jMenuTraitementComplexeReconstructionGeodesique);
         jMenuTraitementComplexe.add(jMenuTraitementComplexeFiltreMedian);
+
+
+        /***************************/
+        //Contours
+        /***************************/
+        jMenuContours = new javax.swing.JMenu();
+        jMenuContours.setText("Contours");
+        jMenuBar1.add(jMenuContours);
+
+        /* Item du sous-menu lineaire */
+        jMenuContoursLineaire = new javax.swing.JMenu();
+        jMenuContoursLineaire.setText("Lineaire");
+        jMenuContours .add(jMenuContoursLineaire);
+        jMenuContoursLineairePrewitt = new javax.swing.JMenuItem();
+        jMenuContoursLineairePrewitt.setText("Prewitt");
+        jMenuContoursLineairePrewitt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineairePrewittActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireSobel = new javax.swing.JMenuItem();
+        jMenuContoursLineaireSobel.setText("Sobel");
+        jMenuContoursLineaireSobel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireSobelActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien4 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien4.setText("Le Placien 4");
+        jMenuContoursLineaireLaplacien4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien4ActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien8 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien8.setText("Le Placien 8");
+        jMenuContoursLineaireLaplacien8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien8ActionPerformed(evt);
+            }
+        });
+
+
+        /* Item du sous-menu Non-lineaire */
+        jMenuContoursNonLineaire = new javax.swing.JMenu();
+        jMenuContoursNonLineaire.setText("Non-lineaire");
+        jMenuContours.add(jMenuContoursNonLineaire);
+
+        jMenuContoursNonLineairegradientErosion = new javax.swing.JMenuItem();
+        jMenuContoursNonLineairegradientErosion.setText("Gradient Erosion");
+        jMenuContoursNonLineairegradientErosion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ContoursNonLineairegradientErosion(evt);
+            }
+        });
+
+        jMenuContoursNonLineairegradientDilatation = new javax.swing.JMenuItem();
+        jMenuContoursNonLineairegradientDilatation.setText("Gradient Dilatation");
+        jMenuContoursNonLineairegradientDilatation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ContoursNonLineairegradientDilatation(evt);
+            }
+        });
+
+        jMenuContoursNonLineairegradientBeucher = new javax.swing.JMenuItem();
+        jMenuContoursNonLineairegradientBeucher.setText("Gradient Beucher");
+        jMenuContoursNonLineairegradientBeucher.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ContoursNonLineairegradientBeucher(evt);
+            }
+        });
+
+        jMenuContoursNonLineairelaplacienNonLineaire = new javax.swing.JMenuItem();
+        jMenuContoursNonLineairelaplacienNonLineaire.setText("laplacienNonLineaire");
+        jMenuContoursNonLineairelaplacienNonLineaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ContoursNonLineairelaplacienNonLineaire(evt);
+            }
+        });
+        jMenuContoursNonLineaire.add(jMenuContoursNonLineairegradientErosion);
+        jMenuContoursNonLineaire.add(jMenuContoursNonLineairegradientDilatation);
+        jMenuContoursNonLineaire.add(jMenuContoursNonLineairegradientBeucher);
+        jMenuContoursNonLineaire.add(jMenuContoursNonLineairelaplacienNonLineaire);
+        jMenuContoursLineaire.add(jMenuContoursLineairePrewitt);
+        jMenuContoursLineaire.add(jMenuContoursLineaireSobel);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien4);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien8);
 
 
         /***************************/
@@ -595,46 +683,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
         jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
 
-        // Contours
-        jMenuContours = new javax.swing.JMenu();
-        jMenuContours.setText("Contours");
-        jMenuBar1.add(jMenuContours);
-        jMenuContoursLineaire = new javax.swing.JMenu();
-        jMenuContoursLineaire.setText("Lineaire");
-        jMenuContours .add(jMenuContoursLineaire);
-        jMenuContoursLineairePrewitt = new javax.swing.JMenuItem();
-        jMenuContoursLineairePrewitt.setText("Prewitt");
-        jMenuContoursLineairePrewitt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuContoursLineairePrewittActionPerformed(evt);
-            }
-        });
-        jMenuContoursLineaireSobel = new javax.swing.JMenuItem();
-        jMenuContoursLineaireSobel.setText("Sobel");
-        jMenuContoursLineaireSobel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuContoursLineaireSobelActionPerformed(evt);
-            }
-        });
-        jMenuContoursLineaireLaplacien4 = new javax.swing.JMenuItem();
-        jMenuContoursLineaireLaplacien4.setText("Le Placien 4");
-        jMenuContoursLineaireLaplacien4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuContoursLineaireLaplacien4ActionPerformed(evt);
-            }
-        });
-        jMenuContoursLineaireLaplacien8 = new javax.swing.JMenuItem();
-        jMenuContoursLineaireLaplacien8.setText("Le Placien 8");
-        jMenuContoursLineaireLaplacien8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuContoursLineaireLaplacien8ActionPerformed(evt);
-            }
-        });
 
-        jMenuContoursLineaire.add(jMenuContoursLineairePrewitt);
-        jMenuContoursLineaire.add(jMenuContoursLineaireSobel);
-        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien4);
-        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien8);
 
 
 
@@ -903,6 +952,42 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             System.out.println("Erreur CImageNG : " + ex.getMessage());
         }
 
+    }
+    private void ContoursNonLineairegradientErosion(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.gradientErosion(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void ContoursNonLineairegradientDilatation(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.gradientDilatation(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void ContoursNonLineairegradientBeucher(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.gradientBeucher(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void ContoursNonLineairelaplacienNonLineaire(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(ContoursNonLineaire.laplacienNonLineaire(imageNG.getMatrice()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void jMenuTraitementComplexeDilatationGeodesique(java.awt.event.ActionEvent evt) {
@@ -1499,10 +1584,8 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuDessiner.setEnabled(true);
         jMenuFourier.setEnabled(false);
         jMenuHistogramme.setEnabled(false);
-
-        //
-        jMenuFiltrage.setEnabled(false);
         jMenuContours.setEnabled(false);
+        jMenuFiltrage.setEnabled(false);
     }
 
     private void jCheckBoxMenuItemDessinerCerclePleinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemDessinerCerclePleinActionPerformed
@@ -1975,12 +2058,10 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuContoursLineaireLaplacien8;
 
 
-
-
-
     //Traitements non lineaire
     private javax.swing.JMenu jMenuTraitementNonLineaire;
     private javax.swing.JMenu jMenuTraitementElementaire;
+    private javax.swing.JMenu jMenuContoursNonLineaire;
     private javax.swing.JMenu jMenuTraitementComplexe;
     private javax.swing.JMenuItem jMenuTraitementElementaireErosion;
     private javax.swing.JMenuItem jMenuTraitementElementaireDilatation;
@@ -1989,6 +2070,10 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuMenuDeTest;
     private javax.swing.JMenuItem jMenuTraitementComplexeDilatationGeodesique;
     private javax.swing.JMenuItem jMenuTraitementComplexeReconstructionGeodesique;
+    private javax.swing.JMenuItem jMenuContoursNonLineairegradientErosion;
+    private javax.swing.JMenuItem jMenuContoursNonLineairegradientDilatation;
+    private javax.swing.JMenuItem jMenuContoursNonLineairegradientBeucher;
+    private javax.swing.JMenuItem jMenuContoursNonLineairelaplacienNonLineaire;
     private javax.swing.JMenuItem jMenuTraitementComplexeFiltreMedian;
     private javax.swing.JMenuItem jMenuCreerImageNGEnCode;
 
