@@ -10,6 +10,7 @@ import CImage.*;
 import CImage.Exceptions.*;
 import CImage.Observers.*;
 import CImage.Observers.Events.*;
+import Etape5.Etape5;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Contours.ContoursNonLineaire;
 import ImageProcessing.Contours.ContoursLineaire;
@@ -422,7 +423,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
 
         /***************************/
-        //Traitements non lin�aire
+        //Traitements non lineaire
         /***************************/
         jMenuTraitementNonLineaire = new javax.swing.JMenu();
         jMenuTraitementNonLineaire.setText("Traitement non lineaire");
@@ -506,6 +507,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuTraitementComplexe.add(jMenuTraitementComplexeDilatationGeodesique);
         jMenuTraitementComplexe.add(jMenuTraitementComplexeReconstructionGeodesique);
         jMenuTraitementComplexe.add(jMenuTraitementComplexeFiltreMedian);
+
 
 
         /***************************/
@@ -683,9 +685,76 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
         jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
 
+        /***************************/
+        //Etape 5
+        /***************************/
+        jMenuEtape5 = new javax.swing.JMenu();
+        jMenuEtape5.setText("Etape 5");
+        jMenuBar1.add(jMenuEtape5);
+
+        jMenuEtape5_1 = new javax.swing.JMenuItem();
+        jMenuEtape5_2 = new javax.swing.JMenuItem();
+        jMenuEtape5_3 = new javax.swing.JMenuItem();
+        jMenuEtape5_4 = new javax.swing.JMenuItem();
+        jMenuEtape5_5 = new javax.swing.JMenuItem();
+        jMenuEtape5_6 = new javax.swing.JMenuItem();
+        jMenuEtape5_7 = new javax.swing.JMenuItem();
+
+        jMenuEtape5_1.setText("Etape 5.1 : LenaBruit");
+        jMenuEtape5_2.setText("Etape 5.2 : LenaAEgaliser");
+        jMenuEtape5_3.setText("Etape 5.3 : petitPois");
+        jMenuEtape5_4.setText("Etape 5.4 : balanes");
+        jMenuEtape5_5.setText("Etape 5.5 : tools");
+        jMenuEtape5_6.setText("Etape 5.6 : vaisseaux");
+        jMenuEtape5_7.setText("Etape 5.7 : Tartines");
+
+        jMenuEtape5_1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_1ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_2ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_3ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_4ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_5ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_6ActionPerformed(evt);
+            }
+        });
+        jMenuEtape5_7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuEtape5_7ActionPerformed(evt);
+            }
+        });
 
 
+        jMenuEtape5.add(jMenuEtape5_1);
+        jMenuEtape5.add(jMenuEtape5_2);
+        jMenuEtape5.add(jMenuEtape5_3);
+        jMenuEtape5.add(jMenuEtape5_4);
+        jMenuEtape5.add(jMenuEtape5_5);
+        jMenuEtape5.add(jMenuEtape5_6);
+        jMenuEtape5.add(jMenuEtape5_7);
 
+        /******************/
+        /******************/
 
         //
         setJMenuBar(jMenuBar1);
@@ -709,6 +778,111 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-500)/2, (screenSize.height-400)/2, 500, 400);
     }// </editor-fold>//GEN-END:initComponents
+
+
+    private void jMenuEtape5_1ActionPerformed(java.awt.event.ActionEvent evt) {
+
+        try {
+
+
+            if (imageRGB != null) {
+                int[][] MatriceRed = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+                int[][] MatriceGreen = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+                int[][] MatriceBlue = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+
+
+                imageRGB.getMatricesRGB(MatriceRed, MatriceGreen, MatriceBlue);
+
+                System.out.println("Debut du calcul des 3 matrices");
+                int[][] MatriceRedSortie = Etape5.Etape5_1_LenaBruit(MatriceRed);
+                int[][] MatriceGreenSortie = Etape5.Etape5_1_LenaBruit(MatriceGreen);
+                int[][] MatriceBlueSortie = Etape5.Etape5_1_LenaBruit(MatriceBlue);
+                System.out.println("Fin du calcul des 3 matrices");
+
+                imageRGB.setMatricesRGB(MatriceRedSortie, MatriceGreenSortie, MatriceBlueSortie);
+
+            }
+            else
+            {
+                int[][] MatriceNG = imageNG.getMatrice();
+                int[][] MatriceNGSortie = Etape5.Etape5_1_LenaBruit(MatriceNG);
+                imageNG.setMatrice(MatriceNGSortie);
+            }
+        }
+        catch (CImageRGBException e) {
+
+        } catch (CImageNGException e) {
+
+        }
+
+    }
+    private void jMenuEtape5_2ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+
+    }
+    private void jMenuEtape5_3ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try {
+
+
+            if (imageRGB != null) {
+                int[][] MatriceRed = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+                int[][] MatriceGreen = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+                int[][] MatriceBlue = new int[imageRGB.getLargeur()][imageRGB.getHauteur()];
+
+                imageRGB.getMatricesRGB(MatriceRed, MatriceGreen, MatriceBlue);
+
+                System.out.println("Debut du calcul des 3 matrices");
+
+                int[][]MatriceQueRougeBinaire = Etape5.garderComposanteRouge(MatriceRed, MatriceGreen, MatriceBlue);
+
+                imageNG = new CImageNG(MatriceQueRougeBinaire);
+                imageNG.setMatrice(MatriceQueRougeBinaire);
+                observer.setCImage(imageNG);
+
+                /*
+                int[][] MatriceRedSortie = Etape5.Etape5_3_PetitsPois(MatriceRed);
+                int[][] MatriceGreenSortie = Etape5.Etape5_3_PetitsPois(MatriceGreen);
+                int[][] MatriceBlueSortie = Etape5.Etape5_3_PetitsPois(MatriceBlue);
+                */
+
+                System.out.println("Fin du calcul des 3 matrices");
+
+                /*imageNG = new CImageNG(MatriceRedSortie);
+                observer.setCImage(imageNG);*/
+
+            }
+            else
+            {
+                System.out.println("Nop");
+            }
+        }
+        catch (CImageRGBException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+
+        }
+
+    }
+    private void jMenuEtape5_4ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+    }
+    private void jMenuEtape5_5ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+    }
+    private void jMenuEtape5_6ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+    }
+    private void jMenuEtape5_7ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+
+    }
 
     private void jMenuHistogrammeAfficherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHistogrammeAfficherActionPerformed
         int histo[];
@@ -2084,5 +2258,17 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuHistogrammeTraitementGamma;
     private javax.swing.JMenuItem jMenuHistogrammeTraitementNegatif;
     private javax.swing.JMenuItem jMenuHistogrammeTraitementEgalisation;
+
+    //Etape 5
+
+    private javax.swing.JMenu jMenuEtape5;
+    private javax.swing.JMenuItem jMenuEtape5_1;
+    private javax.swing.JMenuItem jMenuEtape5_2;
+    private javax.swing.JMenuItem jMenuEtape5_3;
+    private javax.swing.JMenuItem jMenuEtape5_4;
+    private javax.swing.JMenuItem jMenuEtape5_5;
+    private javax.swing.JMenuItem jMenuEtape5_6;
+    private javax.swing.JMenuItem jMenuEtape5_7;
+
 }
 
