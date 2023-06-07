@@ -11,6 +11,7 @@ import CImage.Exceptions.*;
 import CImage.Observers.*;
 import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
+import ImageProcessing.Contours.ContoursLineaire;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
 
@@ -72,6 +73,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         //
         jMenuFiltrage.setEnabled(false);
+        jMenuContours.setEnabled(false);
 
         couleurPinceauRGB = Color.BLACK;
         couleurPinceauNG = 0;
@@ -545,6 +547,48 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
         jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
+
+        // Contours
+        jMenuContours = new javax.swing.JMenu();
+        jMenuContours.setText("Contours");
+        jMenuBar1.add(jMenuContours);
+        jMenuContoursLineaire = new javax.swing.JMenu();
+        jMenuContoursLineaire.setText("Lineaire");
+        jMenuContours .add(jMenuContoursLineaire);
+        jMenuContoursLineairePrewitt = new javax.swing.JMenuItem();
+        jMenuContoursLineairePrewitt.setText("Prewitt");
+        jMenuContoursLineairePrewitt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineairePrewittActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireSobel = new javax.swing.JMenuItem();
+        jMenuContoursLineaireSobel.setText("Sobel");
+        jMenuContoursLineaireSobel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireSobelActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien4 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien4.setText("Le Placien 4");
+        jMenuContoursLineaireLaplacien4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien4ActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien8 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien8.setText("Le Placien 8");
+        jMenuContoursLineaireLaplacien8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien8ActionPerformed(evt);
+            }
+        });
+
+        jMenuContoursLineaire.add(jMenuContoursLineairePrewitt);
+        jMenuContoursLineaire.add(jMenuContoursLineaireSobel);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien4);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien8);
+
 
 
         //
@@ -1197,6 +1241,107 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         }
     }
 
+    private void  jMenuContoursLineairePrewittActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Direction (1: horizontale, 2: verticale: ");
+            JTextField jTextFieldDirection = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldDirection);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int dir = Integer.parseInt(jTextFieldDirection.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Contours Prewitt");
+                int[][] prewitt = ContoursLineaire.gradientPrewitt(f_int, dir);
+                System.out.println("Fin Contours prewitt");
+                prewitt = Utils.MiseAJourCImage(prewitt);
+                imageNG.setMatrice(prewitt);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void  jMenuContoursLineaireSobelActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Direction (1: horizontale, 2: verticale: ");
+            JTextField jTextFieldDirection = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldDirection);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int dir = Integer.parseInt(jTextFieldDirection.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Contours sobel");
+                int[][] sobel = ContoursLineaire.gradientSobel(f_int, dir);
+                System.out.println("Fin Contours sobel");
+                sobel = Utils.MiseAJourCImage(sobel);
+                imageNG.setMatrice(sobel);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+     private void  jMenuContoursLineaireLaplacien4ActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+             int f_int[][] = imageNG.getMatrice();
+             System.out.println("Debut leplacien 4");
+             int[][] leplacien4 = ContoursLineaire.laplacien4(f_int);
+             System.out.println("Fin le placien 4");
+             leplacien4 = Utils.MiseAJourCImage(leplacien4);
+             imageNG.setMatrice(leplacien4);
+             // afficher dans une fenetre separer
+            //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+            //dialogAfficheFiltre.setVisible(true);
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+     private void  jMenuContoursLineaireLaplacien8ActionPerformed(java.awt.event.ActionEvent evt){
+         try
+         {
+             int f_int[][] = imageNG.getMatrice();
+             System.out.println("Debut leplacien 8");
+             int[][] leplacien8 = ContoursLineaire.laplacien8(f_int);
+             System.out.println("Fin le placien 8");
+             leplacien8 = Utils.MiseAJourCImage(leplacien8);
+             imageNG.setMatrice(leplacien8);
+             // afficher dans une fenetre separer
+             //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+             //dialogAfficheFiltre.setVisible(true);
+         }
+         catch (CImageNGException ex)
+         {
+             System.out.println("Erreur CImageNG : " + ex.getMessage());
+         }
+    }
+
     private void activeMenusNG()
     {
         jMenuDessiner.setEnabled(true);
@@ -1205,6 +1350,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         //
         jMenuFiltrage.setEnabled(true);
+        jMenuContours.setEnabled(true);
     }
 
     private void activeMenusRGB()
@@ -1215,6 +1361,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         //
         jMenuFiltrage.setEnabled(false);
+        jMenuContours.setEnabled(false);
     }
 
     private void jCheckBoxMenuItemDessinerCerclePleinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemDessinerCerclePleinActionPerformed
@@ -1672,6 +1819,16 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuFiltrageLocal;
     private javax.swing.JMenuItem jMenuFiltrageMasqueConvolution;
     private javax.swing.JMenuItem jMenuFiltrageMoyenneur;
+
+    //Contour
+    private javax.swing.JMenu jMenuContours;
+    private javax.swing.JMenu jMenuContoursLineaire;
+    private javax.swing.JMenuItem jMenuContoursLineairePrewitt;
+    private javax.swing.JMenuItem jMenuContoursLineaireSobel;
+    private javax.swing.JMenuItem jMenuContoursLineaireLaplacien4;
+    private javax.swing.JMenuItem jMenuContoursLineaireLaplacien8;
+
+
 
 
 
