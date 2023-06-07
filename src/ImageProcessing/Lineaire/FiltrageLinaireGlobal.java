@@ -6,7 +6,15 @@ import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Utils;
 
 public class FiltrageLinaireGlobal {
-
+    /**
+     * Attenuer les variations rapide d'intensité de l'image, certaines impression de flou,
+     * frequence est le niveau de luminance
+     * supprimer le bruit en Haute frequence et garde base frequence
+     * Resultat : image lisse, detail fin, zone réguliere pas changé, du flou est visible vu la degradation
+     * @param image
+     * @param frequenceCoupure
+     * @return
+     */
     public static int[][] filtrePasseBasIdeal(int[][] image,int frequenceCoupure) {
         int hauteur = image.length;
         int largeur = image[0].length;
@@ -37,6 +45,14 @@ public class FiltrageLinaireGlobal {
         return resultat;
     }
 
+    /**
+     * Accentue les detail, image plus nette avec des contours plus marqué
+     * supprimer le bruit en base frequence et garde haute frequence
+     * Resultat: contours et detail fin sont accentués, bords sont plus nettes
+     * @param image
+     * @param frequenceCoupure
+     * @return
+     */
     public static int[][] filtrePasseHautIdeal(int[][] image, int frequenceCoupure) {
         int hauteur = image.length;
         int largeur = image[0].length;
@@ -66,6 +82,13 @@ public class FiltrageLinaireGlobal {
         return resultat;
     }
 
+    /**
+     * Resultat : image lissé ou les detail fin et bruit a haute frequence sont attenués tout en preservant les les countours
+     * @param image
+     * @param frequenceCoupure
+     * @param ordre
+     * @return
+     */
     public static int[][] filtrePasseBasButterworth(int[][] image,int frequenceCoupure,int ordre) {
 
         //FREQUENCE DE COUPURE :  4.12
@@ -101,6 +124,15 @@ public class FiltrageLinaireGlobal {
         return resultat;
 
     }
+
+    /**
+     * Met en évide ce les detail fin et variation rapides de l'image
+     * Resultat : detail fin et variations rapide sont accentué, contours plus nettes
+     * @param image
+     * @param frequenceCoupure
+     * @param ordre
+     * @return
+     */
     public static int[][] filtrePasseHautButterworth(int[][] image,int frequenceCoupure, int ordre) {
         //FREQUENCE DE COUPURE :  4.13
             // 1 / 1 + (frequenceCoupure / Vu²+v²) ^2*ordre
