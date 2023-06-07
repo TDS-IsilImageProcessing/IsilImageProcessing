@@ -1060,3 +1060,4 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuHistogrammeTraitementNegatif;
     private javax.swing.JMenuItem jMenuHistogrammeTraitementEgalisation;
 }
+
