@@ -57,6 +57,8 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     /** Creates new form TestCImage2 */
     public IsilImageProcessing()
     {
+        setSize(1000,1000);
+        setMinimumSize(new Dimension(1000,1000));
         initComponents();
 
         imageRGB = null;
@@ -835,22 +837,39 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
                 System.out.println("Debut du calcul des 3 matrices");
 
-                int[][]MatriceQueRougeBinaire = Etape5.garderComposanteRouge(MatriceRed, MatriceGreen, MatriceBlue);
 
-                imageNG = new CImageNG(MatriceQueRougeBinaire);
-                imageNG.setMatrice(MatriceQueRougeBinaire);
-                observer.setCImage(imageNG);
 
-                /*
-                int[][] MatriceRedSortie = Etape5.Etape5_3_PetitsPois(MatriceRed);
-                int[][] MatriceGreenSortie = Etape5.Etape5_3_PetitsPois(MatriceGreen);
-                int[][] MatriceBlueSortie = Etape5.Etape5_3_PetitsPois(MatriceBlue);
-                */
+
+                int[][] MatriceRedSortie = Etape5.Etape5_3_PetitsPois(MatriceRed); // tous sauf rouge
+                int[][] MatriceGreenSortie = Etape5.Etape5_3_PetitsPois(MatriceGreen); // tous sauf vert
+                int[][] MatriceBlueSortie = Etape5.Etape5_3_PetitsPois(MatriceBlue); // tous sauf bleu
 
                 System.out.println("Fin du calcul des 3 matrices");
+                int[][] rouge = new int[MatriceRedSortie.length][MatriceRedSortie[0].length];
+                int[][] bleu = new int[MatriceRedSortie.length][MatriceRedSortie[0].length];
 
-                /*imageNG = new CImageNG(MatriceRedSortie);
-                observer.setCImage(imageNG);*/
+                for (int i = 0; i < rouge.length; i++) {
+                    for (int j = 0; j < rouge[0].length; j++) {
+                        // bleu => rouge ou vert
+                        // vert => rouge ou bleu
+                        // rouge => vert ou bleu
+                        if (MatriceGreenSortie[i][j] == MatriceBlueSortie[i][j]) {
+                            rouge[i][j] = MatriceGreenSortie[i][j];
+                        } else {
+                            rouge[i][j] = 255;
+                        }
+                        if (MatriceRedSortie[i][j] == MatriceGreenSortie[i][j]) {
+                            bleu[i][j] = MatriceRedSortie[i][j];
+                        } else {
+                            bleu[i][j] = 255;
+                        }
+                    }
+                }
+
+                JDialogAfficheMatriceDouble rougeDialog = new JDialogAfficheMatriceDouble(this, true, Utils.intToDouble(rouge), "Que du rouge");
+                rougeDialog.setVisible(true);
+                JDialogAfficheMatriceDouble bleuDialog = new JDialogAfficheMatriceDouble(this, true, Utils.intToDouble(bleu), "Que du Bleu");
+                bleuDialog.setVisible(true);
 
             }
             else
@@ -863,7 +882,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         }
         catch (Exception e)
         {
-
+            e.printStackTrace();
         }
 
     }

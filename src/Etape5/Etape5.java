@@ -32,21 +32,4 @@ public class Etape5 {
         return Matrice;
     }
 
-    public static int[][] garderComposanteRouge(int[][] rouge, int[][] vert, int[][] bleu) {
-        int[][] resultat = new int[rouge.length][rouge[0].length];
-
-        for (int i = 0; i < rouge.length; i++) {
-            for (int j = 0; j < rouge[0].length; j++) {
-                if (rouge[i][j] == 255 && vert[i][j] == 255 && bleu[i][j] == 255) {
-                    resultat[i][j] = 255;  // Garder la composante rouge
-                } else {
-                    resultat[i][j] = 0;    // Supprimer les autres composantes
-                }
-            }
-        }
-
-        return resultat;
-    }
-
-
 }
