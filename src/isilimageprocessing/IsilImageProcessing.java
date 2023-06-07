@@ -12,14 +12,25 @@ import CImage.Observers.*;
 import CImage.Observers.Events.*;
 import ImageProcessing.Complexe.MatriceComplexe;
 import ImageProcessing.Contours.ContoursNonLineaire;
+import ImageProcessing.Contours.ContoursLineaire;
 import ImageProcessing.Fourier.Fourier;
 import ImageProcessing.Histogramme.Histogramme;
+
+import ImageProcessing.Seuillage.Seuillage;
+
+
 import ImageProcessing.NonLineaire.MorphoComplexe;
 import ImageProcessing.NonLineaire.MorphoElementaire;
+import ImageProcessing.Lineaire.FiltrageLinaireGlobal;
+import ImageProcessing.Lineaire.FiltrageLineaireLocal;
+import ImageProcessing.Utils;
+
 import isilimageprocessing.Dialogues.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import javax.swing.*;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -31,7 +42,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
- * @author  HP_Propriétaire
+ * @author  HP_PropriÃ©taire
  */
 public class IsilImageProcessing extends javax.swing.JFrame implements ClicListener,SelectLigneListener,SelectRectListener,SelectRectFillListener,SelectCercleListener,SelectCercleFillListener
 {
@@ -63,13 +74,65 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuDessiner.setEnabled(false);
         jMenuFourier.setEnabled(false);
         jMenuHistogramme.setEnabled(false);
-        jMenuContours.setEnabled(false);
 
         //
         jMenuFiltrage.setEnabled(false);
+        jMenuContours.setEnabled(false);
 
         couleurPinceauRGB = Color.BLACK;
         couleurPinceauNG = 0;
+
+        /***************************/
+        //Menu Histogramme
+        /***************************/
+        // Les bases sont dï¿½jï¿½ faites plus haut
+
+        jMenuHistogrammeAfficherParamImage.setText("Afficher les parametres image");
+        jMenuHistogrammeTraitementLineaire.setText("traitement lineaire avec saturation");
+        jMenuHistogrammeTraitementGamma.setText("traitement non-lineaire Gamma");
+        jMenuHistogrammeTraitementNegatif.setText("traitement Negatif");
+        jMenuHistogrammeTraitementEgalisation.setText("traitement Egalisation");
+        jMenuHistogrammeAfficherParamImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeAfficherParamImageActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementLineaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementLineaireActionPerformed(evt);
+            }
+        });
+        jMenuHistogrammeTraitementGamma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementGammaActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementNegatif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementNegatifActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementEgalisation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementEgalisationActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogramme.add(jMenuHistogrammeAfficherParamImage);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementLineaire);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementGamma);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementNegatif);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementEgalisation);
+
+
+        /***************************/
+        /***************************/
+
+
+
     }
 
     /** This method is called from within the constructor to
@@ -109,6 +172,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuItemFourierAfficherPartieImaginaire = new javax.swing.JMenuItem();
         jMenuHistogramme = new javax.swing.JMenu();
         jMenuHistogrammeAfficher = new javax.swing.JMenuItem();
+        jMenuHistogrammeAfficherParamImage = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementLineaire = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementGamma = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementNegatif = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementEgalisation = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TestCImage3");
@@ -332,13 +400,29 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
                 jMenuFiltrageGlobalHautIdealActionPerformed(evt);
             }
         });
+        jMenuFiltrageGlobalBasButterworth = new javax.swing.JMenuItem();
+        jMenuFiltrageGlobalBasButterworth.setText("Passe-Bas Butterworth");
+        jMenuFiltrageGlobalBasButterworth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageGlobalBasButterworthActionPerformed(evt);
+            }
+        });
+        jMenuFiltrageGlobalHautButterworth = new javax.swing.JMenuItem();
+        jMenuFiltrageGlobalHautButterworth.setText("Passe-Haut Butterworth");
+        jMenuFiltrageGlobalHautButterworth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageGlobalHautButterworthActionPerformed(evt);
+            }
+        });
 
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasIdeal);
         jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautIdeal);
+        jMenuFiltrageGlobal.add(jMenuFiltrageGlobalBasButterworth);
+        jMenuFiltrageGlobal.add(jMenuFiltrageGlobalHautButterworth);
 
 
         /***************************/
-        //Traitements non linéaire
+        //Traitements non linï¿½aire
         /***************************/
         jMenuTraitementNonLineaire = new javax.swing.JMenu();
         jMenuTraitementNonLineaire.setText("Traitement non lineaire");
@@ -431,6 +515,40 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuContours.setText("Contours");
         jMenuBar1.add(jMenuContours);
 
+        /* Item du sous-menu lineaire */
+        jMenuContoursLineaire = new javax.swing.JMenu();
+        jMenuContoursLineaire.setText("Lineaire");
+        jMenuContours .add(jMenuContoursLineaire);
+        jMenuContoursLineairePrewitt = new javax.swing.JMenuItem();
+        jMenuContoursLineairePrewitt.setText("Prewitt");
+        jMenuContoursLineairePrewitt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineairePrewittActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireSobel = new javax.swing.JMenuItem();
+        jMenuContoursLineaireSobel.setText("Sobel");
+        jMenuContoursLineaireSobel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireSobelActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien4 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien4.setText("Le Placien 4");
+        jMenuContoursLineaireLaplacien4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien4ActionPerformed(evt);
+            }
+        });
+        jMenuContoursLineaireLaplacien8 = new javax.swing.JMenuItem();
+        jMenuContoursLineaireLaplacien8.setText("Le Placien 8");
+        jMenuContoursLineaireLaplacien8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuContoursLineaireLaplacien8ActionPerformed(evt);
+            }
+        });
+
+
         /* Item du sous-menu Non-lineaire */
         jMenuContoursNonLineaire = new javax.swing.JMenu();
         jMenuContoursNonLineaire.setText("Non-lineaire");
@@ -471,7 +589,10 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuContoursNonLineaire.add(jMenuContoursNonLineairegradientDilatation);
         jMenuContoursNonLineaire.add(jMenuContoursNonLineairegradientBeucher);
         jMenuContoursNonLineaire.add(jMenuContoursNonLineairelaplacienNonLineaire);
-
+        jMenuContoursLineaire.add(jMenuContoursLineairePrewitt);
+        jMenuContoursLineaire.add(jMenuContoursLineaireSobel);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien4);
+        jMenuContoursLineaire.add(jMenuContoursLineaireLaplacien8);
 
 
         /***************************/
@@ -483,7 +604,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuBar1.add(jMenuMenuDeTest);
 
         jMenuCreerImageNGEnCode = new javax.swing.JMenuItem();
-        jMenuCreerImageNGEnCode.setText("Créer image NG en code");
+        jMenuCreerImageNGEnCode.setText("CrÃ©er image NG en code");
         jMenuCreerImageNGEnCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuCreerImageNGEnCode(evt);
@@ -496,8 +617,77 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         /***************************/
         /***************************/
 
-        //
 
+        /******************
+            Menu Seuillage
+        *****************/
+
+
+        //Menu Seuillage
+        jMenuSeuillage = new javax.swing.JMenu();
+        jMenuSeuillage.setText("Seuillage");
+        jMenuBar1.add(jMenuSeuillage);
+
+        //Items du menu Seuillage
+        jMenuSeuillageSeuillageSimple = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageSimple.setText("Seuillage simple");
+        jMenuSeuillageSeuillageSimple.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageSimpleActionPerformed(evt);
+            }
+        });
+
+        jMenuSeuillageSeuillageDouble = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageDouble.setText("Seuillage double");
+        jMenuSeuillageSeuillageDouble.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageDoubleActionPerformed(evt);
+            }
+        });
+
+        jMenuSeuillageSeuillageAutomatique = new javax.swing.JMenuItem();
+        jMenuSeuillageSeuillageAutomatique.setText("Seuillage Automatique");
+        jMenuSeuillageSeuillageAutomatique.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSeuillageSeuillageAutomatiqueActionPerformed(evt);
+            }
+        });
+
+        //Ajouts des items au menu Seuillage
+        jMenuSeuillage.add(jMenuSeuillageSeuillageSimple);
+        jMenuSeuillage.add(jMenuSeuillageSeuillageDouble);
+        jMenuSeuillage.add(jMenuSeuillageSeuillageAutomatique);
+
+        /******************/
+        /******************/
+
+        //
+        jMenuFiltrageLocal = new javax.swing.JMenu();
+        jMenuFiltrageLocal.setText("Local");
+        jMenuFiltrage.add(jMenuFiltrageLocal);
+        jMenuFiltrageMasqueConvolution = new javax.swing.JMenuItem();
+        jMenuFiltrageMasqueConvolution.setText("Masque Convolution");
+        jMenuFiltrageMasqueConvolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageLocalConvolutionActionPerformed(evt);
+            }
+        });
+        jMenuFiltrageMoyenneur = new javax.swing.JMenuItem();
+        jMenuFiltrageMoyenneur.setText("Moyenneur");
+        jMenuFiltrageMoyenneur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuFiltrageLocalMoyenneurActionPerformed(evt);
+            }
+        });
+
+        jMenuFiltrageLocal.add(jMenuFiltrageMasqueConvolution);
+        jMenuFiltrageLocal.add(jMenuFiltrageMoyenneur);
+
+
+
+
+
+        //
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -533,7 +723,7 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             return;
         }
 
-        // Création du dataset
+        // CrÃ©ation du dataset
         XYSeries serie = new XYSeries("Histo");
         for(int i=0 ; i<256 ; i++) serie.add(i,histo[i]);
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -552,6 +742,85 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         frame.pack();
         frame.setVisible(true);
     }//GEN-LAST:event_jMenuHistogrammeAfficherActionPerformed
+
+    private void jMenuHistogrammeAfficherParamImageActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        int Min = 0;
+        int Max = 255;
+        int Luminance = 0;
+        double contraste1 = 0.0;
+        double contraste2 = 0.0;
+
+        try {
+            if (imageNG == null)
+            {
+                Min = Histogramme.minimum(imageRGB.getCImageNG().getMatrice());
+                Max = Histogramme.maximum(imageRGB.getCImageNG().getMatrice());
+                Luminance = Histogramme.luminance(imageRGB.getCImageNG().getMatrice());
+                contraste1 = Histogramme.contraste1(imageRGB.getCImageNG().getMatrice());
+                contraste2 = Histogramme.contraste2(imageRGB.getCImageNG().getMatrice());
+            }
+            else
+            {
+                Min = Histogramme.minimum(imageNG.getMatrice());
+                Max = Histogramme.maximum(imageNG.getMatrice());
+                Luminance = Histogramme.luminance(imageNG.getMatrice());
+                contraste1 = Histogramme.contraste1(imageNG.getMatrice());
+                contraste2 = Histogramme.contraste2(imageNG.getMatrice());
+
+            }
+
+            //Afficher les rï¿½sultas dans une fenï¿½tre.
+            System.out.println("Min : " + Min);
+            System.out.println("Max : " + Max);
+            System.out.println("Luminance : " + Luminance);
+            System.out.println("contraste1 : " + contraste1);
+            System.out.println("contraste2 : " + contraste2);
+
+        } catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementLineaireActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creerCourbeTonaleLineaireSaturation(0, 255)));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementGammaActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creerCourbeTonaleGamma(2.0)));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementNegatifActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creeCourbeTonaleNegatif()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementEgalisationActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creeCourbeTonaleEgalisation(imageNG.getMatrice())));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void jMenuTraitementElementaireErosion(java.awt.event.ActionEvent evt) {
 
@@ -790,8 +1059,8 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
 
     /*
-    * Cette fonction permet de générer sous forme de programmation une image NG
-    * Le but premier etait de creer une image binaire, moitié noir / moitié blanc pour l'utiliser comme masque geodesique
+    * Cette fonction permet de gÃ©nÃ©rer sous forme de programmation une image NG
+    * Le but premier etait de creer une image binaire, moitiÃ© noir / moitiÃ© blanc pour l'utiliser comme masque geodesique
     * Cette fonction est appellee par le "Menu de test"
     * */
     private CImageNG MaFctOuvrirImageNG() {
@@ -889,7 +1158,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     }
 
 
-
     private void jMenuFiltrageGlobalBasIdealActionPerformed(java.awt.event.ActionEvent evt) {
         try
         {
@@ -902,13 +1170,14 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                // TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                // TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-bas");
-                //dialog.setVisible(true);
-
+                System.out.println("Debut filtrage Bas Ideal");
+                int[][] filtrageBasIdeal = FiltrageLinaireGlobal.filtrePasseBasIdeal(f_int, freqence);
+                System.out.println("Fin du filtrage Bas Ideal");
+                filtrageBasIdeal = Utils.MiseAJourCImage(filtrageBasIdeal);
+                imageNG.setMatrice(filtrageBasIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasIdeal), "filtrage passe-bas");
+                //dialogAfficheFiltre.setVisible(true);
 
             } else {
                 System.out.println("Cancelled");
@@ -933,12 +1202,88 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
             if (result == JOptionPane.OK_OPTION) {
                 int freqence = Integer.parseInt(jTextFieldFrequence.getText());
                 int f_int[][] = imageNG.getMatrice();
-                System.out.println("Debut Filtrage Bas Ideal");
-                //TODO
-                System.out.println("FinFiltrage Bas Ideal");
-                //// TODO donner resultat du filtre (d)
-                //JDialogAfficheMatriceDouble dialog = new JDialogAfficheMatriceDouble(this,true, Utils.intToDouble(d),"Filtre passe-haut");
-                //dialog.setVisible(true);
+                System.out.println("Debut Filtrage Haut Ideal");
+                int[][] filtrageHautIdeal = FiltrageLinaireGlobal.filtrePasseHautIdeal(f_int, freqence);
+                System.out.println("Fin Filtrage Haut Ideal");
+                filtrageHautIdeal = Utils.MiseAJourCImage(filtrageHautIdeal);
+                imageNG.setMatrice(filtrageHautIdeal);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautIdeal), "filtrage passe-haut");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageGlobalBasButterworthActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Frequence: ");
+            JTextField jTextFieldFrequence = new JTextField();
+            JLabel ordreLabel = new JLabel("Ordre: ");
+            JTextField jTextFieldOrdre = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldFrequence);
+            panel.add(ordreLabel);
+            panel.add(jTextFieldOrdre);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
+                int ordre = Integer.parseInt(jTextFieldOrdre.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Bas butterworth");
+                int[][] filtrageBasButter = FiltrageLinaireGlobal.filtrePasseBasButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                filtrageBasButter = Utils.MiseAJourCImage(filtrageBasButter);
+                imageNG.setMatrice(filtrageBasButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageBasButter), "filtrage passe bas butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageGlobalHautButterworthActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Frequence: ");
+            JTextField jTextFieldFrequence = new JTextField();
+            JLabel ordreLabel = new JLabel("Ordre: ");
+            JTextField jTextFieldOrdre = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldFrequence);
+            panel.add(ordreLabel);
+            panel.add(jTextFieldOrdre);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int freqence = Integer.parseInt(jTextFieldFrequence.getText());
+                int ordre = Integer.parseInt(jTextFieldOrdre.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Haut butterworth");
+                int[][] filtrageHautButter = FiltrageLinaireGlobal.filtrePasseHautButterworth(f_int, freqence, ordre);
+                System.out.println("Fin Filtrage Haut butterworth");
+                filtrageHautButter = Utils.MiseAJourCImage(filtrageHautButter);
+                imageNG.setMatrice(filtrageHautButter);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
             } else {
                 System.out.println("Cancelled");
             }
@@ -950,15 +1295,288 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         }
     }
 
+    private void jMenuFiltrageLocalConvolutionActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel maskLabel = new JLabel("Masque: ");
+            JTextField jTextFieldMasque = new JTextField();
+            panel.add(maskLabel);
+            panel.add(jTextFieldMasque);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                String v = jTextFieldMasque.getText();
+                String[] arr = v.split(",");
+                int length = (int) Math.sqrt(arr.length);
+                double[][] masque = new double[length][length];
+
+                int count = 0;
+                for (int i = 0; i < masque.length; i++) {
+                    for (int j = 0; j < masque[0].length; j++) {
+                        double val = Double.parseDouble(arr[count]);
+                        masque[i][j] = val;
+                        count++;
+                    }
+                }
+
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Masque Convolution");
+                int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMasqueConvolution(f_int, masque);
+                System.out.println("Fin Filtrage Masque Convolution");
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Masque Convolution");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void jMenuFiltrageLocalMoyenneurActionPerformed(ActionEvent event) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel maskLabel = new JLabel("Masque: ");
+            JTextField jTextFieldMasque = new JTextField();
+            panel.add(maskLabel);
+            panel.add(jTextFieldMasque);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int tailleMasque = Integer.valueOf(jTextFieldMasque.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Filtrage Masque Convolution");
+                int[][] filtrageConvolution = FiltrageLineaireLocal.filtreMoyenneur(f_int, tailleMasque);
+                System.out.println("Fin Filtrage Masque Convolution");
+                filtrageConvolution = Utils.MiseAJourCImage(filtrageConvolution);
+                imageNG.setMatrice(filtrageConvolution);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageConvolution), "filtrage Moyenneur");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void  jMenuContoursLineairePrewittActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Direction (1: horizontale, 2: verticale: ");
+            JTextField jTextFieldDirection = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldDirection);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int dir = Integer.parseInt(jTextFieldDirection.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Contours Prewitt");
+                int[][] prewitt = ContoursLineaire.gradientPrewitt(f_int, dir);
+                System.out.println("Fin Contours prewitt");
+                prewitt = Utils.MiseAJourCImage(prewitt);
+                imageNG.setMatrice(prewitt);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+    private void  jMenuContoursLineaireSobelActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JLabel freqLabel = new JLabel("Direction (1: horizontale, 2: verticale: ");
+            JTextField jTextFieldDirection = new JTextField();
+            panel.add(freqLabel);
+            panel.add(jTextFieldDirection);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                int dir = Integer.parseInt(jTextFieldDirection.getText());
+                int f_int[][] = imageNG.getMatrice();
+                System.out.println("Debut Contours sobel");
+                int[][] sobel = ContoursLineaire.gradientSobel(f_int, dir);
+                System.out.println("Fin Contours sobel");
+                sobel = Utils.MiseAJourCImage(sobel);
+                imageNG.setMatrice(sobel);
+                // afficher dans une fenetre separer
+                //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+                //dialogAfficheFiltre.setVisible(true);
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+     private void  jMenuContoursLineaireLaplacien4ActionPerformed(java.awt.event.ActionEvent evt){
+        try
+        {
+             int f_int[][] = imageNG.getMatrice();
+             System.out.println("Debut leplacien 4");
+             int[][] leplacien4 = ContoursLineaire.laplacien4(f_int);
+             System.out.println("Fin le placien 4");
+             leplacien4 = Utils.MiseAJourCImage(leplacien4);
+             imageNG.setMatrice(leplacien4);
+             // afficher dans une fenetre separer
+            //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+            //dialogAfficheFiltre.setVisible(true);
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+     private void  jMenuContoursLineaireLaplacien8ActionPerformed(java.awt.event.ActionEvent evt){
+         try
+         {
+             int f_int[][] = imageNG.getMatrice();
+             System.out.println("Debut leplacien 8");
+             int[][] leplacien8 = ContoursLineaire.laplacien8(f_int);
+             System.out.println("Fin le placien 8");
+             leplacien8 = Utils.MiseAJourCImage(leplacien8);
+             imageNG.setMatrice(leplacien8);
+             // afficher dans une fenetre separer
+             //JDialogAfficheFiltre dialogAfficheFiltre = new JDialogAfficheFiltre(this, true, Utils.intToDouble(filtrageHautButter), "filtrage passe Haut butterworth");
+             //dialogAfficheFiltre.setVisible(true);
+         }
+         catch (CImageNGException ex)
+         {
+             System.out.println("Erreur CImageNG : " + ex.getMessage());
+         }
+    }
+
+    private void jMenuSeuillageSeuillageSimpleActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldSeuil = new JTextField();
+            panel.add(jTextFieldSeuil);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Valeur du seuil",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                int seuil = Integer.parseInt(jTextFieldSeuil.getText());
+                int MatriceImage[][] = imageNG.getMatrice();
+                System.out.println("Debut Seuillage simple");
+                int [][] ResulatSeuillageSimple = Seuillage.seuillageSimple(MatriceImage, seuil);
+                System.out.println("Fin Seuillage simple");
+
+                imageNG.setMatrice(ResulatSeuillageSimple);
+
+            } else {
+                System.out.println("Cancelled");
+            }
+
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void jMenuSeuillageSeuillageDoubleActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            JPanel panel1 = new JPanel(new GridLayout(0, 1));
+            JPanel panel2 = new JPanel(new GridLayout(0, 1));
+            JTextField jTextFieldSeuil1 = new JTextField();
+            JTextField jTextFieldSeuil2 = new JTextField();
+            panel1.add(jTextFieldSeuil1);
+            panel2.add(jTextFieldSeuil2);
+
+            int result = JOptionPane.showConfirmDialog(null, panel1, "Valeur du seuil 1",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+
+                result = JOptionPane.showConfirmDialog(null, panel2, "Valeur du seuil 2",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+
+                    int seuil1 = Integer.parseInt(jTextFieldSeuil1.getText());
+                    int seuil2 = Integer.parseInt(jTextFieldSeuil2.getText());
+                    int MatriceImage[][] = imageNG.getMatrice();
+
+                    System.out.println("Debut Seuillage double");
+                    int [][] ResulatSeuillageDouble = Seuillage.seuillageDouble(MatriceImage, seuil1, seuil2);
+                    System.out.println("Fin Seuillage double");
+
+                    imageNG.setMatrice(ResulatSeuillageDouble);
+                }
+                else
+                {
+                    System.out.println("Cancelled");
+                }
+            }
+            else
+            {
+                System.out.println("Cancelled");
+            }
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+    }
+
+    private void jMenuSeuillageSeuillageAutomatiqueActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try{
+
+            System.out.println("Debut Seuillage automatique");
+            int [][] ResulatSeuillageAutomatique = Seuillage.seuillageAutomatique(imageNG.getMatrice());
+            System.out.println("Fin Seuillage automatique");
+
+            imageNG.setMatrice(ResulatSeuillageAutomatique);
+        }
+        catch (CImageNGException ex)
+        {
+            System.out.println("Erreur CImageNG : " + ex.getMessage());
+        }
+
+    }
+
+
     private void activeMenusNG()
     {
         jMenuDessiner.setEnabled(true);
         jMenuFourier.setEnabled(true);
         jMenuHistogramme.setEnabled(true);
-        jMenuContours.setEnabled(true);
 
         //
         jMenuFiltrage.setEnabled(true);
+        jMenuContours.setEnabled(true);
     }
 
     private void activeMenusRGB()
@@ -1420,10 +2038,28 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenu jMenuFiltrageGlobal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalBasIdeal;
     private javax.swing.JMenuItem jMenuFiltrageGlobalHautIdeal;
+    private javax.swing.JMenu jMenuSeuillage;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageSimple;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageDouble;
+    private javax.swing.JMenuItem jMenuSeuillageSeuillageAutomatique;
+
+    private javax.swing.JMenuItem jMenuFiltrageGlobalBasButterworth;
+    private javax.swing.JMenuItem jMenuFiltrageGlobalHautButterworth;
+    private javax.swing.JMenu jMenuFiltrageLocal;
+    private javax.swing.JMenuItem jMenuFiltrageMasqueConvolution;
+    private javax.swing.JMenuItem jMenuFiltrageMoyenneur;
+
+    //Contour
+    private javax.swing.JMenu jMenuContours;
+    private javax.swing.JMenu jMenuContoursLineaire;
+    private javax.swing.JMenuItem jMenuContoursLineairePrewitt;
+    private javax.swing.JMenuItem jMenuContoursLineaireSobel;
+    private javax.swing.JMenuItem jMenuContoursLineaireLaplacien4;
+    private javax.swing.JMenuItem jMenuContoursLineaireLaplacien8;
+
 
     //Traitements non lineaire
     private javax.swing.JMenu jMenuTraitementNonLineaire;
-    private javax.swing.JMenu jMenuContours;
     private javax.swing.JMenu jMenuTraitementElementaire;
     private javax.swing.JMenu jMenuContoursNonLineaire;
     private javax.swing.JMenu jMenuTraitementComplexe;
@@ -1442,5 +2078,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuCreerImageNGEnCode;
 
 
-
+    //Histogramme
+    private javax.swing.JMenuItem jMenuHistogrammeAfficherParamImage;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementLineaire;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementGamma;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementNegatif;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementEgalisation;
 }
+
