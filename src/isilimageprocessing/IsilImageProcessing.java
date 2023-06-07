@@ -75,6 +75,58 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
         couleurPinceauRGB = Color.BLACK;
         couleurPinceauNG = 0;
+
+        /***************************/
+        //Menu Histogramme
+        /***************************/
+        // Les bases sont d�j� faites plus haut
+
+        jMenuHistogrammeAfficherParamImage.setText("Afficher les parametres image");
+        jMenuHistogrammeTraitementLineaire.setText("traitement lineaire avec saturation");
+        jMenuHistogrammeTraitementGamma.setText("traitement non-lineaire Gamma");
+        jMenuHistogrammeTraitementNegatif.setText("traitement Negatif");
+        jMenuHistogrammeTraitementEgalisation.setText("traitement Egalisation");
+        jMenuHistogrammeAfficherParamImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeAfficherParamImageActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementLineaire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementLineaireActionPerformed(evt);
+            }
+        });
+        jMenuHistogrammeTraitementGamma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementGammaActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementNegatif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementNegatifActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogrammeTraitementEgalisation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistogrammeTraitementEgalisationActionPerformed(evt);
+            }
+        });
+
+        jMenuHistogramme.add(jMenuHistogrammeAfficherParamImage);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementLineaire);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementGamma);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementNegatif);
+        jMenuHistogramme.add(jMenuHistogrammeTraitementEgalisation);
+
+
+        /***************************/
+        /***************************/
+
+
+
     }
 
     /** This method is called from within the constructor to
@@ -114,6 +166,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         jMenuItemFourierAfficherPartieImaginaire = new javax.swing.JMenuItem();
         jMenuHistogramme = new javax.swing.JMenu();
         jMenuHistogrammeAfficher = new javax.swing.JMenuItem();
+        jMenuHistogrammeAfficherParamImage = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementLineaire = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementGamma = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementNegatif = new javax.swing.JMenuItem();
+        jMenuHistogrammeTraitementEgalisation = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TestCImage3");
@@ -546,6 +603,85 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         frame.setVisible(true);
     }//GEN-LAST:event_jMenuHistogrammeAfficherActionPerformed
 
+    private void jMenuHistogrammeAfficherParamImageActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        int Min = 0;
+        int Max = 255;
+        int Luminance = 0;
+        double contraste1 = 0.0;
+        double contraste2 = 0.0;
+
+        try {
+            if (imageNG == null)
+            {
+                Min = Histogramme.minimum(imageRGB.getCImageNG().getMatrice());
+                Max = Histogramme.maximum(imageRGB.getCImageNG().getMatrice());
+                Luminance = Histogramme.luminance(imageRGB.getCImageNG().getMatrice());
+                contraste1 = Histogramme.contraste1(imageRGB.getCImageNG().getMatrice());
+                contraste2 = Histogramme.contraste2(imageRGB.getCImageNG().getMatrice());
+            }
+            else
+            {
+                Min = Histogramme.minimum(imageNG.getMatrice());
+                Max = Histogramme.maximum(imageNG.getMatrice());
+                Luminance = Histogramme.luminance(imageNG.getMatrice());
+                contraste1 = Histogramme.contraste1(imageNG.getMatrice());
+                contraste2 = Histogramme.contraste2(imageNG.getMatrice());
+
+            }
+
+            //Afficher les r�sultas dans une fen�tre.
+            System.out.println("Min : " + Min);
+            System.out.println("Max : " + Max);
+            System.out.println("Luminance : " + Luminance);
+            System.out.println("contraste1 : " + contraste1);
+            System.out.println("contraste2 : " + contraste2);
+
+        } catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementLineaireActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creerCourbeTonaleLineaireSaturation(0, 255)));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementGammaActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creerCourbeTonaleGamma(2.0)));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementNegatifActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creeCourbeTonaleNegatif()));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void jMenuHistogrammeTraitementEgalisationActionPerformed(java.awt.event.ActionEvent evt) {
+        try
+        {
+            imageNG.setMatrice(Histogramme.rehaussement(imageNG.getMatrice(),Histogramme.creeCourbeTonaleEgalisation(imageNG.getMatrice())));
+        }
+        catch (CImageNGException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void jMenuTraitementElementaireErosion(java.awt.event.ActionEvent evt) {
 
         System.out.println("jMenuTraitementElementaireErosion");
@@ -844,7 +980,6 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
         }
 
     }
-
 
 
     private void jMenuFiltrageGlobalBasIdealActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1555,5 +1690,11 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     private javax.swing.JMenuItem jMenuCreerImageNGEnCode;
 
 
-
+    //Histogramme
+    private javax.swing.JMenuItem jMenuHistogrammeAfficherParamImage;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementLineaire;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementGamma;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementNegatif;
+    private javax.swing.JMenuItem jMenuHistogrammeTraitementEgalisation;
 }
+
