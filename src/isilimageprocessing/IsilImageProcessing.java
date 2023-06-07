@@ -837,29 +837,26 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
 
                 System.out.println("Debut du calcul des 3 matrices");
 
-
-
-
-                int[][] MatriceRedSortie = Etape5.Etape5_3_PetitsPois(MatriceRed); // tous sauf rouge
+              /*  int[][] MatriceRedSortie = Etape5.Etape5_3_PetitsPois(MatriceRed); // tous sauf rouge
                 int[][] MatriceGreenSortie = Etape5.Etape5_3_PetitsPois(MatriceGreen); // tous sauf vert
                 int[][] MatriceBlueSortie = Etape5.Etape5_3_PetitsPois(MatriceBlue); // tous sauf bleu
-
+*/
                 System.out.println("Fin du calcul des 3 matrices");
-                int[][] rouge = new int[MatriceRedSortie.length][MatriceRedSortie[0].length];
-                int[][] bleu = new int[MatriceRedSortie.length][MatriceRedSortie[0].length];
+                int[][] rouge = new int[MatriceRed.length][MatriceRed[0].length];
+                int[][] bleu = new int[MatriceRed.length][MatriceRed[0].length];
 
                 for (int i = 0; i < rouge.length; i++) {
                     for (int j = 0; j < rouge[0].length; j++) {
                         // bleu => rouge ou vert
                         // vert => rouge ou bleu
                         // rouge => vert ou bleu
-                        if (MatriceGreenSortie[i][j] == MatriceBlueSortie[i][j]) {
-                            rouge[i][j] = MatriceGreenSortie[i][j];
+                        if (MatriceGreen[i][j] == MatriceBlue[i][j]) {
+                            rouge[i][j] = MatriceGreen[i][j];
                         } else {
                             rouge[i][j] = 255;
                         }
-                        if (MatriceRedSortie[i][j] == MatriceGreenSortie[i][j]) {
-                            bleu[i][j] = MatriceRedSortie[i][j];
+                        if (MatriceRed[i][j] == MatriceGreen[i][j]) {
+                            bleu[i][j] = MatriceRed[i][j];
                         } else {
                             bleu[i][j] = 255;
                         }
@@ -888,10 +885,69 @@ public class IsilImageProcessing extends javax.swing.JFrame implements ClicListe
     }
     private void jMenuEtape5_4ActionPerformed(java.awt.event.ActionEvent evt)
     {
+        try {
+            if (imageRGB != null) {
+                imageNG = imageRGB.getCImageNG();
+            }
+            int[][] f_int = imageNG.getMatrice();
 
+            int[][] fermeture = MorphoElementaire.fermeture(f_int, 8);
+            int[][] seuil = Seuillage.seuillageSimple(fermeture, 150);
+            int[][] erosion = MorphoElementaire.erosion(seuil, 20);
+            int[] [] dilatation = MorphoElementaire.dilatation(erosion, 15);
+
+
+            int[][] masqueBinaireGrand = MorphoComplexe.dilatationGeodesique(f_int, dilatation, 2);
+
+            int[][] grand = new int[f_int.length][f_int[0].length];
+            int[][] petit = new int[f_int.length][f_int[0].length];
+
+            for (int i = 0; i < f_int.length; i++) {
+                for (int j = 0; j < f_int[i].length; j++) {
+                    int a = f_int[i][j] - masqueBinaireGrand[i][j];
+                    grand[i][j] = Math.abs(a);
+                    if (grand[i][j] == 0){
+                        petit[i][j] = f_int[i][j];
+                    } else {
+                        petit[i][j] = 0;
+                    }
+                }
+            }
+
+
+
+
+            imageNG.setMatrice(petit);
+
+
+
+
+
+//            JDialogAfficheMatriceDouble rougeDialog = new JDialogAfficheMatriceDouble(this, true, Utils.intToDouble(petit), "Petit");
+//            rougeDialog.setVisible(true);
+//            JDialogAfficheMatriceDouble bleuDialog = new JDialogAfficheMatriceDouble(this, true, Utils.intToDouble(grand2), "Grand");
+//            bleuDialog.setVisible(true);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void jMenuEtape5_5ActionPerformed(java.awt.event.ActionEvent evt)
     {
+        // gradient erosion + seuillage auto
+        try {
+            if (imageRGB != null) {
+                imageNG = imageRGB.getCImageNG();
+            }
+            int[][] f_int = imageNG.getMatrice();
+            int[][] grandientErosion = ContoursNonLineaire.gradientErosion(f_int);
+            int[][] seuil = Seuillage.seuillageAutomatique(grandientErosion);
+            imageNG.setMatrice(seuil);
+            observer.setCImage(imageNG);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
     private void jMenuEtape5_6ActionPerformed(java.awt.event.ActionEvent evt)
